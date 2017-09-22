@@ -1,20 +1,47 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
+import React, { Component } from 'react'
 import './App.css';
+import { messages } from './mock-data.js';
 
 class App extends Component {
   render() {
     return (
       <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
-        </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
+        <MessageTable messages={messages}/>      
       </div>
     );
+  }
+}
+
+class MessageTable extends Component {  
+  render() {
+    var messages = this.props.messages;
+    var messageRows = messages.map((message) =>
+        <MessageRow message={message}
+                    key={message.id} />);
+
+    return (
+      <table className="MessageTable">
+          <tbody>          
+              {messageRows}
+          </tbody>
+      </table>
+      );
+  }
+}
+
+class MessageRow extends Component {
+  render() {
+    var message = this.props.message;
+    var sender = message.sender;
+    var timestamp = message.timestamp;
+    var content = message.content;
+
+    return (      
+      <tr className="MessageRow">
+        <td>{sender} ({timestamp}):</td>
+        <td>{content}</td>              
+      </tr>
+      );
   }
 }
 
