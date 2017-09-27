@@ -1,19 +1,21 @@
 (ns server.core
+  (:use ring.util.response)
   (:require [ring.adapter.jetty :as jetty]
+            [compojure.handler :as handler]
+            [compojure.route :as route]
             [compojure.core :as compojure]
             [ring.util.http-response :as response]))
 
-(defn response-handler [request]
-  (response/ok
-    (str "<html><body> your IP is: "
-         (:remote-addr request)
-         "</body></html>")))
+(compojure/defroutes app-routes
+  (compojure/GET "/" [] (resource-response "index.html" {:root "public"}))
+  (route/resources "/")
+  (route/not-found "Page not found"))
 
-(compojure/defroutes handler
- (compojure/GET "/" request response-handler))
+(def app
+  (handler/api app-routes))
 
 (defn -main []
   (jetty/run-jetty
-      (-> #'handler)
+      (-> #'app)
       {:port 3000
        :join? false}))
