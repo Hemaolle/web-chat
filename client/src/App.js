@@ -1,9 +1,14 @@
 import React, { Component } from 'react'
 import './App.css';
 import { messages } from './mock-data.js';
+import xhr from 'xhr';
 
 class App extends Component {
   render() {
+    xhr.get('/api', function(err, resp) {
+      console.log(resp.body)
+    })
+
     return (
       <div className="App">
         <MessageTable messages={messages}/>      
