@@ -1,17 +1,35 @@
 import React, { Component } from 'react'
 import './App.css';
-import { messages } from './mock-data.js';
 import xhr from 'xhr';
 
 class App extends Component {
-  render() {
-    xhr.get('/api', function(err, resp) {
-      console.log(resp.body)
-    })
+  constructor(props) {
+    super(props);
+    this.state = { messages: [] };
+    this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);
+  }
 
+  componentDidMount() {
+    this.loadMessagesFromServer();
+    setInterval(this.loadMessagesFromServer, this.props.pollInterval);
+  }
+
+  loadMessagesFromServer() {
+    xhr.get('http://localhost:3001/api/messages', function(err, resp) {
+      if (err) {
+        console.error(err);
+      }
+      else {
+        var messages = JSON.parse(resp.body);
+        this.setState({messages: messages})
+      }      
+    }.bind(this));
+  }
+
+  render() {
     return (
       <div className="App">
-        <MessageTable messages={messages}/>      
+        <MessageTable messages={this.state.messages}/>      
       </div>
     );
   }

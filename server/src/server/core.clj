@@ -3,11 +3,20 @@
   (:require [ring.adapter.jetty :as jetty]
             [compojure.handler :as handler]
             [compojure.route :as route]
-            [compojure.core :refer [defroutes routes GET]]
-            [ring.util.http-response :as response]))
+            [compojure.core :refer [defroutes routes GET wrap-routes]]
+            [ring.util.http-response :as response]
+            [clojure.java.io :as io]
+            [clojure.data.json :as json]))
+
+(defn get-messages
+  []
+  (-> "messages.json"
+    (io/resource)
+    (slurp)
+    (response/ok)))
 
 (defroutes api-routes
-  (GET "/api" [] (response/ok "Api here")))
+  (GET "/api/messages" [] (get-messages)))
 
 (defroutes frontend-routes
   (GET "/" [] (resource-response "index.html" {:root "public"}))

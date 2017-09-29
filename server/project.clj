@@ -6,5 +6,6 @@
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [ring "1.4.0"]
                  [compojure "1.4.0"]
-                 [metosin/ring-http-response "0.6.5"]]
+                 [metosin/ring-http-response "0.6.5"]
+                 [org.clojure/data.json "0.2.6"]]
   :main server.core)
