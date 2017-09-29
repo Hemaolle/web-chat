@@ -38,6 +38,8 @@
 (def app
   (routes    
     (wrap-cors #'api-routes)
+    ; TODO: handler/api is deprecated and probably doesn't make sense for the frontend
+    ; anyway.
     (handler/api frontend-routes)))
 
 (defn -main []
