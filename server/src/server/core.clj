@@ -15,6 +15,21 @@
     (slurp)
     (response/ok)))
 
+(defn uuid [] (str (java.util.UUID/randomUUID)))
+
+(defn save-message!
+  [author content date]
+  (spit (io/resource "messages.json")
+    (-> "messages.json"
+      (io/resource)
+      (slurp)
+      (json/read-str)
+      (conj { :sender author
+              :content content
+              :timestamp date
+              :id (uuid)})
+      (json/write-str))))
+
 (defroutes api-routes
   (GET "/api/messages" [] (get-messages)))
 
