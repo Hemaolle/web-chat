@@ -1,11 +1,13 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import './App.css';
 import xhr from 'xhr';
+import './username-popup.js'
+import Popup from 'react-popup';
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { messages: [] };
+    this.state = { messages: [] , username: ''};
     this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);
     this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
   }
@@ -30,6 +32,7 @@ class App extends Component {
   }
 
   handleMessageSubmit(message) {
+    message.author = this.state.username;
     xhr.post('http://localhost:3001/api/message', {
       json: true,
       body: message
@@ -47,10 +50,40 @@ class App extends Component {
   render() {
     return (
       <div className="App">
+        <Username username={this.state.username}
+          onUsernameChange={(value) => this.setState({username: value})}/>
         <MessageTable messages={this.state.messages}/>
         <MessageInput onMessageSubmit={this.handleMessageSubmit}/>
       </div>
     );
+  }
+}
+
+class Username extends Component {
+  constructor(props) {
+    super(props);
+    this.promptUsername = this.promptUsername.bind(this);
+  }
+
+  componentDidMount() {
+    if (!this.props.username)
+      {
+        this.promptUsername();
+      }
+  }
+
+  promptUsername() {
+    Popup.plugins().prompt('', 'Type your name', function (value) {
+      this.props.onUsernameChange(value);
+    }.bind(this));
+  }
+
+  render() {
+    return this.props.username ?
+      (<div>
+        Logged in as <b>{this.props.username}</b> <button onClick={this.promptUsername}>Change</button>
+      </div>)
+      : null;
   }
 }
 
@@ -90,14 +123,9 @@ class MessageRow extends Component {
 class MessageInput extends Component {
   constructor(props) {
     super(props);
-    this.state = { author: '', text: '' };
-    this.handleAuthorChange = this.handleAuthorChange.bind(this);
+    this.state = {text: '' };
     this.handleTextChange = this.handleTextChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-  }
-
-  handleAuthorChange(e) {
-    this.setState({author: e.target.value});
   }
 
   handleTextChange(e) {
@@ -106,24 +134,17 @@ class MessageInput extends Component {
 
   handleSubmit(e) {
     e.preventDefault();
-    var author = this.state.author.trim();
     var text = this.state.text.trim();
-    if (!text || !author) {
+    if (!text) {
       return;
     }
-    this.props.onMessageSubmit({author: author, content: text});
-    this.setState({author: '', text: ''});
+    this.props.onMessageSubmit({content: text});
+    this.setState({text: ''});
   }
 
   render() {
     return (
       <form className="commentForm" onSubmit={this.handleSubmit}>
-        <input
-          type="text"
-          placeholder="Your name"
-          value={this.state.author}
-          onChange={this.handleAuthorChange}
-        />
         <input
           type="text"
           placeholder="Say something..."
