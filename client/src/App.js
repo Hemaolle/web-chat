@@ -7,6 +7,7 @@ class App extends Component {
     super(props);
     this.state = { messages: [] };
     this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);
+    this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
   }
 
   componentDidMount() {
@@ -15,14 +16,31 @@ class App extends Component {
   }
 
   loadMessagesFromServer() {
-    xhr.get('http://localhost:3001/api/messages', function(err, resp) {
+    xhr.get('http://localhost:3001/api/messages',
+      {json: true},
+      function(err, resp) {
       if (err) {
         console.error(err);
       }
       else {
-        var messages = JSON.parse(resp.body);
+        var messages = resp.body;
         this.setState({messages: messages})
       }      
+    }.bind(this));
+  }
+
+  handleMessageSubmit(message) {
+    xhr.post('http://localhost:3001/api/message', {
+      json: true,
+      body: message
+    }, function(err, resp) {
+      if (err) {
+        console.error(err);
+      }
+      else {
+        var messages = resp.body;
+        this.setState({messages: messages})
+      } 
     }.bind(this));
   }
 
@@ -30,7 +48,7 @@ class App extends Component {
     return (
       <div className="App">
         <MessageTable messages={this.state.messages}/>
-        <MessageInput onCommentSubmit={(comment) => console.log(comment)}/>
+        <MessageInput onMessageSubmit={this.handleMessageSubmit}/>
       </div>
     );
   }
@@ -93,7 +111,7 @@ class MessageInput extends Component {
     if (!text || !author) {
       return;
     }
-    this.props.onCommentSubmit({author: author, text: text});
+    this.props.onMessageSubmit({author: author, content: text});
     this.setState({author: '', text: ''});
   }
 
