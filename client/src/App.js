@@ -7,9 +7,10 @@ import Popup from 'react-popup';
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { messages: [] , username: ''};
+    this.state = { messages: [] , username: localStorage.getItem('username')};
     this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);
     this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
+    this.handleUsernameChange = this.handleUsernameChange.bind(this);
   }
 
   componentDidMount() {
@@ -47,11 +48,16 @@ class App extends Component {
     }.bind(this));
   }
 
+  handleUsernameChange(username) {
+    localStorage.setItem('username', username);
+    this.setState({username: username});
+  }
+
   render() {
     return (
       <div className="App">
         <Username username={this.state.username}
-          onUsernameChange={(value) => this.setState({username: value})}/>
+          onUsernameChange={this.handleUsernameChange}/>
         <MessageTable messages={this.state.messages}/>
         <MessageInput onMessageSubmit={this.handleMessageSubmit}/>
       </div>
