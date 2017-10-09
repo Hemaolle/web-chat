@@ -10,4 +10,6 @@
                  [metosin/ring-http-response "0.6.5"]
                  [org.clojure/data.json "0.2.6"]
                  [clj-time "0.14.0"]]
-  :main server.core)
+  :main server.core
+  :plugins [[lein-ring "0.9.7"]]
+  :ring {:handler server.core/app})
