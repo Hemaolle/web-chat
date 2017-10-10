@@ -6,49 +6,31 @@
             [compojure.route :as route]
             [compojure.core :refer [defroutes routes GET POST wrap-routes]]
             [ring.util.http-response :as response]
-            [clojure.java.io :as io]
-            [clojure.data.json :as json]
-            [clj-time.core :as time]
-            [clj-time.format :as format-time]))
+            [clojure.data.json :as json]            
+            [server.db.core :as db]
+            [server.config :refer [env]]))
 
-(def message-file "messages.json")
-(def time-formatter (format-time/formatters :basic-date-time))
+; Extend sql timestamp to be json serializable.
+(extend-type java.sql.Timestamp
+  json/JSONWriter
+  (-write [date out]
+  (json/-write (str date) out)))
 
 (defn read-messages
   "Read messages from file as a string."
   []
-  (-> message-file
-    (io/resource)
-    (slurp)))
-
-(defn uuid [] (str (java.util.UUID/randomUUID)))
-
-(defn append-message
-  "Append a new message to a list of messages."
-  [messages author content]  
-  (conj messages
-        {:sender author
-         :content content
-         :timestamp (format-time/unparse time-formatter (time/now))
-         :id (uuid)}))
-
-(defn save-messages!
-  "Save a string to the messages file"
-  [messages]
-  (spit (io/resource message-file) messages))
+  (json/write-str (db/get-messages)))
 
 (defn post-message!
   "Read messages from storage, append a message with author and content,
   store the new messages in storage and return them as a string."
   [author content]
-  (let [new-messages-str
-           (-> (read-messages)
-           (json/read-str)
-           (append-message author content)
-           (json/write-str))]
-    (do
-      (save-messages! new-messages-str)
-      new-messages-str)))
+  (do
+    (db/save-message!
+      {:author author
+       :content content
+       :timestamp (java.util.Date.)})
+    (read-messages)))
 
 (defroutes api-routes
   (GET "/api/messages" [] (response/ok (read-messages)))
@@ -81,8 +63,14 @@
     ; anyway.
     (handler/api frontend-routes)))
 
+(defn init
+  []
+  (mount.core/start))
+
 (defn -main []
-  (jetty/run-jetty
-      (-> #'app)
-      {:port 3001
-       :join? false}))
+  (do
+    (init)
+    (jetty/run-jetty
+        (-> #'app)
+        {:port 3001
+         :join? false})))

@@ -113,7 +113,7 @@ class MessageTable extends Component {
 class MessageRow extends Component {
   render() {
     var message = this.props.message;
-    var sender = message.sender;
+    var sender = message.author;
     var timestamp = message.timestamp;
     var content = message.content;
 
