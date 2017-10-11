@@ -2,7 +2,6 @@
   height: 100%;
   display: table;
   width: 100%;
-  text-align: center;
 }
 
 .Username {
@@ -25,7 +24,7 @@
 }
 
 .Channels {
-  width: 100px;
+  width: 150px;
   background-color: pink;
 }
 
