@@ -7,8 +7,7 @@
             [compojure.core :refer [defroutes routes GET POST wrap-routes]]
             [ring.util.http-response :as response]
             [clojure.data.json :as json]            
-            [server.db.core :as db]
-            [server.config :refer [env]]))
+            [server.db.core :as db]))
 
 ; Extend sql timestamp to be json serializable.
 (extend-type java.sql.Timestamp
