@@ -15,7 +15,7 @@ class Username extends Component {
   }
 
   promptUsername() {
-    Popup.plugins().prompt('', 'Type your name', function (value) {
+    Popup.plugins().prompt('What\'s your name?', '', 'Type your name', function (value) {
       this.props.onUsernameChange(value);
     }.bind(this));
   }

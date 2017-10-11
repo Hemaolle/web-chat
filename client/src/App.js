@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import './App.css';
 import xhr from 'xhr';
-import './username-popup.js'
-import Username from './Username.jsx'
-import MessageTable from './MessageTable.jsx'
-import MessageInput from './MessageInput.jsx'
-import Channels from './Channels.jsx'
+import './Prompt.jsx';
+import Username from './Username.jsx';
+import MessageTable from './MessageTable.jsx';
+import MessageInput from './MessageInput.jsx';
+import Channels from './Channels.jsx';
 
 class App extends Component {
   constructor(props) {

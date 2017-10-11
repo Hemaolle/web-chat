@@ -36,7 +36,7 @@ class Prompt extends React.Component {
 }
 
 /** Prompt plugin */
-Popup.registerPlugin('prompt', function (defaultValue, placeholder, callback) {
+Popup.registerPlugin('prompt', function (title, defaultValue, placeholder, callback) {
     let promptValue = null;
     let promptChange = function (value) {
         promptValue = value;
@@ -45,7 +45,7 @@ Popup.registerPlugin('prompt', function (defaultValue, placeholder, callback) {
     console.log("Create prompt plugin");
 
     this.create({
-        title: 'What\'s your name?',
+        title: title,
         content: <Prompt onChange={promptChange} placeholder={placeholder} value={defaultValue} />,
         buttons: {
             left: ['cancel'],
