@@ -8,6 +8,12 @@ VALUES (:author, :content, :timestamp)
 -- :doc selects all available messages
 SELECT * from messages
 
+-- :name save-channel! :! :n
+-- :doc creates a new channel using the channel name key
+INSERT INTO channels
+(name)
+VALUES (:name)
+
 -- :name get-channels :? :*
 -- :doc selects all available channels
 SELECT * from channels

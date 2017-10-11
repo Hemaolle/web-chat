@@ -28,3 +28,11 @@
   "Read messages from file as a string."
   []
   (json/write-str (db/get-channels)))
+
+(defn post-channel!
+  "Add a new channel"
+  [name]
+  (do
+    (db/save-channel!
+      {:name name})
+    (get-channels)))

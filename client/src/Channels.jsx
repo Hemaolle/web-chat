@@ -1,7 +1,19 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
+import Popup from 'react-popup';
 
 class Channels extends Component {
+  constructor(props) {
+    super(props);
+    this.promptChannelName = this.promptChannelName.bind(this);
+  }
+
+  promptChannelName() {
+    Popup.plugins().prompt('Name the new channel', '', 'Type the channel name', function (value) {
+      this.props.onChannelAdd({name: value});
+    }.bind(this));
+  }
+
   render() {
     var channels = this.props.channels;
     var channelItems = channels.map((channel) =>
@@ -12,9 +24,12 @@ class Channels extends Component {
     })
 
     return (
-      <ul className={classes}>
-        {channelItems}
-      </ul>
+      <div className={classes}>
+        <ul>
+          {channelItems}
+        </ul>
+        <button onClick={this.promptChannelName}>New channel</button>
+      </div>
     );
   }
 }

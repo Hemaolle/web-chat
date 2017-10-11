@@ -19,6 +19,7 @@ class App extends Component {
     this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
     this.loadChannelsFromServer = this.loadChannelsFromServer.bind(this);
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
+    this.handleChannelAdd = this.handleChannelAdd.bind(this);
   }
 
   componentDidMount() {
@@ -76,13 +77,29 @@ class App extends Component {
     this.setState({username: username});
   }
 
+  handleChannelAdd(channel) {
+    xhr.post('http://localhost:3001/api/channel', {
+      json: true,
+      body: channel
+    }, function(err, resp) {
+      if (err) {
+        console.error(err);
+      }
+      else {
+        var channels = resp.body;
+        this.setState({channels: channels})
+      } 
+    }.bind(this));
+  }
+
   render() {
     return (
       <div className="App wrapper">
         <Username username={this.state.username}        
           onUsernameChange={this.handleUsernameChange}/>
         <div className="mainContent">
-          <Channels channels={this.state.channels}/>
+          <Channels channels={this.state.channels}
+            onChannelAdd={this.handleChannelAdd}/>
           <div className="box messaging">
             <MessageTable messages={this.state.messages}/>
             <MessageInput onMessageSubmit={this.handleMessageSubmit}/>
