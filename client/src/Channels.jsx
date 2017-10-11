@@ -5,7 +5,7 @@ class Channels extends Component {
   render() {
     var channels = this.props.channels;
     var channelItems = channels.map((channel) =>
-        <li>{channel.name}</li>);
+        <li key={channel.id}>{channel.name}</li>);
     var classes = classNames({
       "box": true,
       "Channels": true
