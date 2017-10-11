@@ -13,23 +13,27 @@ class App extends Component {
     this.state = {
       messages: [],
       username: localStorage.getItem('username'),
-      channels: []
+      channels: [],
+      currentChannel: {id: 1}
     };
     this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);
     this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
     this.loadChannelsFromServer = this.loadChannelsFromServer.bind(this);
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handleChannelAdd = this.handleChannelAdd.bind(this);
+    this.handleChannelChange = this.handleChannelChange.bind(this);
   }
 
   componentDidMount() {
-    this.loadMessagesFromServer();
+    this.loadMessagesFromServer(this.state.currentChannel);
     this.loadChannelsFromServer();
-    setInterval(this.loadMessagesFromServer, this.props.pollInterval);
+    setInterval(
+      () => this.loadMessagesFromServer(this.state.currentChannel),
+      this.props.pollInterval);
   }
 
-  loadMessagesFromServer() {
-    xhr.get('http://localhost:3001/api/messages',
+  loadMessagesFromServer(channel) {
+    xhr.get(`http://localhost:3001/api/messages?channelId=${channel.id}`,
       {json: true},
       function(err, resp) {
       if (err) {
@@ -44,6 +48,7 @@ class App extends Component {
 
   handleMessageSubmit(message) {
     message.author = this.state.username;
+    message.channelId = this.state.currentChannel.id;
     xhr.post('http://localhost:3001/api/message', {
       json: true,
       body: message
@@ -67,7 +72,9 @@ class App extends Component {
       }
       else {
         var channels = resp.body;
-        this.setState({channels: channels})
+        this.setState(
+          {channels: channels,
+           currentChannel: channels[0]});
       }      
     }.bind(this));
   }
@@ -92,6 +99,13 @@ class App extends Component {
     }.bind(this));
   }
 
+  handleChannelChange(channel) {
+    this.setState({currentChannel: channel});
+
+    // Note that the state doesn't change immediately.
+    this.loadMessagesFromServer(channel);
+  }
+
   render() {
     return (
       <div className="App wrapper">
@@ -99,7 +113,9 @@ class App extends Component {
           onUsernameChange={this.handleUsernameChange}/>
         <div className="mainContent">
           <Channels channels={this.state.channels}
-            onChannelAdd={this.handleChannelAdd}/>
+            currentChannel={this.state.currentChannel}
+            onChannelAdd={this.handleChannelAdd}
+            onChannelSelect={(channel) => this.handleChannelChange(channel)}/>            
           <div className="box messaging">
             <MessageTable messages={this.state.messages}/>
             <MessageInput onMessageSubmit={this.handleMessageSubmit}/>

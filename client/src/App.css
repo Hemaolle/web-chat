@@ -26,6 +26,7 @@
 .Channels {
   width: 150px;
   background-color: pink;
+  padding: 1em;
 }
 
 .input {

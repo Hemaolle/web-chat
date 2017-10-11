@@ -3,15 +3,18 @@
   (:require [compojure.core :refer [defroutes GET POST]]
   			[compojure.route :as route]
   			[ring.util.http-response :as response]
-        [server.controller :refer :all]))
+        [server.controller :refer :all]
+        [ring.middleware.params :refer [wrap-params]]
+        [ring.middleware.json :refer [wrap-json-params]]))
 
 (defroutes api-routes
-  (GET "/api/messages" [] (response/ok (get-messages)))
-  (POST "/api/message" [author, content]
-    (response/ok (post-message! author content)))
+  (wrap-params (GET "/api/messages" [channelId] 
+      (response/ok (get-messages channelId))))
+  (wrap-json-params (POST "/api/message" [author, content, channelId]
+    (response/ok (post-message! author content channelId))))
   (GET "/api/channels" [] (response/ok (get-channels)))
-  (POST "/api/channel" [name]
-    (response/ok (post-channel! name))))
+  (wrap-json-params (POST "/api/channel" [name]
+    (response/ok (post-channel! name)))))
 
 (defroutes frontend-routes
   (GET "/" [] (resource-response "index.html" {:root "public"}))

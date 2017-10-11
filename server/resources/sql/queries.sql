@@ -1,12 +1,14 @@
 -- :name save-message! :! :n
 -- :doc creates a new message using the author, content, and timestamp keys
 INSERT INTO messages
-(author, content, timestamp)
-VALUES (:author, :content, :timestamp)
+(author, content, timestamp, channel_id)
+VALUES (:author, :content, :timestamp, :channel-id)
 
 -- :name get-messages :? :*
--- :doc selects all available messages
-SELECT * from messages
+-- :doc find messages for a matching channel id.
+SELECT *
+FROM messages
+WHERE channel_id = :channel-id
 
 -- :name save-channel! :! :n
 -- :doc creates a new channel using the channel name key

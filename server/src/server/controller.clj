@@ -1,6 +1,7 @@
 (ns server.controller
     (:require [clojure.data.json :as json]
-              [server.db.core :as db]))
+              [server.db.core :as db]
+              [clojure.tools.logging :as log]))
 
 ; Extend sql timestamp to be json serializable.
 (extend-type java.sql.Timestamp
@@ -9,23 +10,25 @@
   (json/-write (str date) out)))
 
 (defn get-messages
-  "Read messages from file as a string."
-  []
-  (json/write-str (db/get-messages)))
+  "Get messages for a channel as a string"
+  [channel-id]
+  (json/write-str
+    (db/get-messages
+      {:channel-id channel-id})))
 
 (defn post-message!
-  "Read messages from storage, append a message with author and content,
-  store the new messages in storage and return them as a string."
-  [author content]
+  "Add a new message, return all messages for the used channel as a string."
+  [author content channel-id]
   (do
     (db/save-message!
       {:author author
        :content content
-       :timestamp (java.util.Date.)})
-    (get-messages)))
+       :timestamp (java.util.Date.)
+       :channel-id channel-id})
+    (get-messages channel-id)))
 
 (defn get-channels
-  "Read messages from file as a string."
+  "List all channels."
   []
   (json/write-str (db/get-channels)))
 
