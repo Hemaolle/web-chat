@@ -1,13 +1,18 @@
 import React, { Component } from 'react';
+import classNames from 'classnames';
 
 class Channels extends Component {
   render() {
     var channels = this.props.channels;
     var channelItems = channels.map((channel) =>
         <li>{channel.name}</li>);
+    var classes = classNames({
+      "box": true,
+      "Channels": true
+    })
 
     return (
-      <ul className="Channels">
+      <ul className={classes}>
         {channelItems}
       </ul>
     );

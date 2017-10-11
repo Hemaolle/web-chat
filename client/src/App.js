@@ -78,12 +78,17 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <Username username={this.state.username}
+      <div className="App wrapper">
+        <Username username={this.state.username}        
           onUsernameChange={this.handleUsernameChange}/>
-        <Channels channels={this.state.channels}/>
-        <MessageTable messages={this.state.messages}/>
-        <MessageInput onMessageSubmit={this.handleMessageSubmit}/>
+        <div className="mainContent">
+          <Channels channels={this.state.channels}/>
+          <div className="box messaging">
+            <MessageTable messages={this.state.messages}/>
+            <MessageInput onMessageSubmit={this.handleMessageSubmit}/>
+          </div>
+        </div>
+        
       </div>
     );
   }

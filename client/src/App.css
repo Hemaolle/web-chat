@@ -1,0 +1,44 @@
+.wrapper {
+  height: 100%;
+  display: table;
+  width: 100%;
+  text-align: center;
+}
+
+.Username {
+  display: table-row;
+  height: 30px;
+  width: 100%;
+  background-color: gray;
+  text-align: right;
+}
+
+.mainContent {
+  height: 100%;
+  display: table;
+  width: 100%;
+  background-color: lightblue;
+}
+
+.box {
+  display: table-cell;
+}
+
+.Channels {
+  width: 100px;
+  background-color: pink;
+}
+
+.input {
+  width: 100%; 
+}
+
+.inputContainer {
+    display: block;
+    overflow: hidden;
+    padding: 0 0.5em 0 0;
+}
+
+.submit {
+  float: right;
+}

@@ -25,13 +25,15 @@ class MessageInput extends Component {
   render() {
     return (
       <form className="commentForm" onSubmit={this.handleSubmit}>
-        <input
-          type="text"
-          placeholder="Say something..."
-          value={this.state.text}
-          onChange={this.handleTextChange}
-        />
-        <input type="submit" value="Post" />
+        <input type="submit" value="Post" className="submit"/>
+        <span className="inputContainer"> 
+          <input
+            type="text"
+            placeholder="Say something..."
+            value={this.state.text}
+            onChange={this.handleTextChange}
+            className="input" />
+        </span>        
       </form>
     );
   }
