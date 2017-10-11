@@ -5,18 +5,25 @@ import './username-popup.js'
 import Username from './Username.jsx'
 import MessageTable from './MessageTable.jsx'
 import MessageInput from './MessageInput.jsx'
+import Channels from './Channels.jsx'
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { messages: [] , username: localStorage.getItem('username')};
+    this.state = {
+      messages: [],
+      username: localStorage.getItem('username'),
+      channels: []
+    };
     this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);
     this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
+    this.loadChannelsFromServer = this.loadChannelsFromServer.bind(this);
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
   }
 
   componentDidMount() {
     this.loadMessagesFromServer();
+    this.loadChannelsFromServer();
     setInterval(this.loadMessagesFromServer, this.props.pollInterval);
   }
 
@@ -50,6 +57,20 @@ class App extends Component {
     }.bind(this));
   }
 
+  loadChannelsFromServer() {
+    xhr.get('http://localhost:3001/api/channels',
+      {json: true},
+      function(err, resp) {
+      if (err) {
+        console.error(err);
+      }
+      else {
+        var channels = resp.body;
+        this.setState({channels: channels})
+      }      
+    }.bind(this));
+  }
+
   handleUsernameChange(username) {
     localStorage.setItem('username', username);
     this.setState({username: username});
@@ -60,6 +81,7 @@ class App extends Component {
       <div className="App">
         <Username username={this.state.username}
           onUsernameChange={this.handleUsernameChange}/>
+        <Channels channels={this.state.channels}/>
         <MessageTable messages={this.state.messages}/>
         <MessageInput onMessageSubmit={this.handleMessageSubmit}/>
       </div>

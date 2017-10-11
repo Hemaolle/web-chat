@@ -7,3 +7,7 @@ VALUES (:author, :content, :timestamp)
 -- :name get-messages :? :*
 -- :doc selects all available messages
 SELECT * from messages
+
+-- :name get-channels :? :*
+-- :doc selects all available channels
+SELECT * from channels

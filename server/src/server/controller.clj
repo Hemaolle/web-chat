@@ -8,7 +8,7 @@
   (-write [date out]
   (json/-write (str date) out)))
 
-(defn read-messages
+(defn get-messages
   "Read messages from file as a string."
   []
   (json/write-str (db/get-messages)))
@@ -22,4 +22,9 @@
       {:author author
        :content content
        :timestamp (java.util.Date.)})
-    (read-messages)))
+    (get-messages)))
+
+(defn get-channels
+  "Read messages from file as a string."
+  []
+  (json/write-str (db/get-channels)))
