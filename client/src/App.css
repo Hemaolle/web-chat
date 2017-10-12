@@ -4,12 +4,16 @@
   width: 100%;
 }
 
-.Username {
+.header {
   display: table-row;
   height: 30px;
   width: 100%;
   background-color: gray;
   text-align: right;
+}
+
+.Username {
+  padding: 0.5em;
 }
 
 .mainContent {
@@ -41,4 +45,8 @@
 
 .submit {
   float: right;
+}
+
+button {
+  margin: 0.5em;
 }

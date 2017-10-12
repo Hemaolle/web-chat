@@ -110,8 +110,10 @@ class App extends Component {
   render() {
     return (
       <div className="App wrapper">
-        <Username username={this.state.username}        
-          onUsernameChange={this.handleUsernameChange}/>
+        <div className="header">
+          <Username username={this.state.username}
+            onUsernameChange={this.handleUsernameChange}/>
+        </div>
         <div className="mainContent">
           <Channels channels={this.state.channels}
             currentChannel={this.state.currentChannel}
