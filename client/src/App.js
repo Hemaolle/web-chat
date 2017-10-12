@@ -102,7 +102,8 @@ class App extends Component {
   handleChannelChange(channel) {
     this.setState({currentChannel: channel});
 
-    // Note that the state doesn't change immediately.
+    // Note that the state doesn't change immediately, so we can't take
+    // the channel from the current state.
     this.loadMessagesFromServer(channel);
   }
 
