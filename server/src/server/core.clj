@@ -1,6 +1,6 @@
 (ns server.core
   (:require [ring.adapter.jetty :as jetty]
-            [ring.middleware.json :refer [wrap-json-params]]
+            [server.middleware :refer [wrap-cors]]
             [compojure.handler :as handler]
             [compojure.core :refer [routes]]
             [server.routes :refer [api-routes frontend-routes]]))
