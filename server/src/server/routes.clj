@@ -14,7 +14,9 @@
     (response/ok (post-message! author content channelId))) wrap-json-params)
   (GET "/api/channels" [] (response/ok (get-channels)))
   (wrap-routes (POST "/api/channel" [name]
-    (response/ok (post-channel! name))) wrap-json-params))
+    (response/ok (post-channel! name))) wrap-json-params)
+  (wrap-routes (POST "/api/user" [name]
+    (response/ok (post-user! name))) wrap-json-params))
 
 (defroutes frontend-routes
   (GET "/" [] (resource-response "index.html" {:root "public"}))

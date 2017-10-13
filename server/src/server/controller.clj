@@ -39,3 +39,18 @@
     (db/save-channel!
       {:name name})
     (get-channels)))
+
+(defn post-user!
+  "Add a new user if a user with the same username doesn't exist yet.
+  In any case return the id for the username."
+  [name]
+  (json/write-str
+    {:userId 
+      (if-let [userId 
+        (db/get-user-id {:name name})]
+        userId
+        (do
+          (db/save-user! {:name name})
+          ((db/get-user-id {:name name}))))
+    }))
+

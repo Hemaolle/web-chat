@@ -84,6 +84,17 @@ class App extends Component {
   handleUsernameChange(username) {
     localStorage.setItem('username', username);
     this.setState({username: username});
+    xhr.post('http://localhost:3001/api/user', {
+      json: true,
+      body: {name: username}
+    }, function(err, resp) {
+      if (err) {
+        console.error(err);
+      }
+      else {
+        console.log("User id: " + resp.body.userId);
+      } 
+    }.bind(this));
   }
 
   handleChannelAdd(channel) {
