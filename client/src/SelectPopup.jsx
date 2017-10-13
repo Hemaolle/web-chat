@@ -1,17 +1,22 @@
 import React from 'react';
 import Popup from 'react-popup';
-import Select from 'react-select';
 
-/** Prompt plugin */
 Popup.registerPlugin('select', function (title, options, callback) {
     let selectValue = null;
-    let selectChange = function (value) {
-        selectValue = value;
+    let selectChange = function (event) {
+      selectValue = event.target.value;
     };
+
+    var optionElements = options.map((option) =>
+      (<option key={option.value} value={option.value}>
+        {option.label}
+      </option>));
 
     this.create({
         title: title,
-        content: <Select className="Select" value={selectValue} options={options} onChange={selectChange}/>,
+        content: (<select onChange={selectChange}>
+                    {optionElements}
+                  </select>),
         buttons: {
             left: ['cancel'],
             right: [{
