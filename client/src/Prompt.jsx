@@ -8,7 +8,7 @@ class Prompt extends React.Component {
         super(props);
 
         this.state = {
-            value: this.props.defaultValue
+            value: this.props.value
         };
 
         this.onChange = (e) => this._onChange(e);
