@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import 'react-select/dist/react-select.css';
 import './App.css';
 import xhr from 'xhr';
 import './Prompt.jsx';
+import './SelectPopup.jsx'
 import Username from './Username.jsx';
 import MessageTable from './MessageTable.jsx';
 import MessageInput from './MessageInput.jsx';

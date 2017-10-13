@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import Popup from 'react-popup';
+import Select from 'react-select';
 
 class Channels extends Component {
   constructor(props) {
     super(props);
     this.promptChannelName = this.promptChannelName.bind(this);
     this.selectChannel = this.selectChannel.bind(this);
+    this.promptChannelToJoin = this.promptChannelToJoin.bind(this);
   }
 
   promptChannelName() {
@@ -17,6 +19,12 @@ class Channels extends Component {
 
   selectChannel(channel) {
     this.props.onChannelSelect(channel)
+  }
+
+  promptChannelToJoin() {
+    var options = this.props.channels.map((channel) =>
+      ({ value: channel.id, label: channel.name }));
+    Popup.plugins().select('Select a channel to join', options, (channel) => console.log(channel.name))
   }
 
   render() {
@@ -38,6 +46,7 @@ class Channels extends Component {
         <ul>
           {channelItems}
         </ul>
+        <button onClick={this.promptChannelToJoin}>Join channel</button>
         <button onClick={this.promptChannelName}>New channel</button>
       </div>
     );
