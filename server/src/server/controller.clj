@@ -1,23 +1,15 @@
 (ns server.controller
-    (:require [clojure.data.json :as json]
-              [server.db.core :as db]
+    (:require [server.db.core :as db]
               [clojure.tools.logging :as log]))
 
-; Extend sql timestamp to be json serializable.
-(extend-type java.sql.Timestamp
-  json/JSONWriter
-  (-write [date out]
-  (json/-write (str date) out)))
-
 (defn get-messages
-  "Get messages for a channel as a string"
+  "Get messages for a channel."
   [channel-id]
-  (json/write-str
-    (db/get-messages
-      {:channel-id channel-id})))
+  (db/get-messages
+    {:channel-id channel-id}))
 
 (defn post-message!
-  "Add a new message, return all messages for the used channel as a string."
+  "Add a new message, return all messages for the used channel."
   [author content channel-id]
   (do
     (db/save-message!
@@ -30,11 +22,11 @@
 (defn get-channels
   "List all channels."
   []
-  (json/write-str (db/get-channels)))
+  (db/get-channels))
 
 (defn get-user-channels
   [user-id]
-  (json/write-str (db/get-user-channels {:user-id user-id})))
+  (db/get-user-channels {:user-id user-id}))
 
 (defn join-channel!
   "Add the user to the participants of the channel"
@@ -51,17 +43,16 @@
                           (db/save-channel!
                           {:name name}))]
     (let [user-channels (join-channel! new-channel-id user-id)]
-      (json/write-str {:userChannels (json/read-str user-channels)
-       :createdChannel new-channel-id}))))
+      {:userChannels user-channels
+       :createdChannel new-channel-id})))
 
 (defn post-user!
   "Add a new user if a user with the same username doesn't exist yet.
   In any case return the id for the username."
-  [name]
-  (json/write-str
-    (if-let [userId 
-      (db/get-user-id {:name name})]
-      userId
-      (do
-        (db/save-user! {:name name})
-        ((db/get-user-id {:name name}))))))
+  [name]  
+  (if-let [userId 
+    (db/get-user-id {:name name})]
+    userId
+    (do
+      (db/save-user! {:name name})
+      ((db/get-user-id {:name name})))))
