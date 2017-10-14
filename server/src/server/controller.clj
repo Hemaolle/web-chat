@@ -21,12 +21,26 @@
 
 (defn get-channels
   "List all channels."
+  [type]
+  (db/get-channels {:type type}))
+
+(defn get-named-channels
   []
-  (db/get-channels))
+  (get-channels 0))
 
 (defn get-user-channels
+  [user-id type]
+  (db/get-user-channels
+    {:user-id user-id
+     :type type}))
+
+(defn get-user-named-channels
   [user-id]
-  (db/get-user-channels {:user-id user-id}))
+  (get-user-channels user-id 0))
+
+(defn get-user-chat-channels
+  [user-id]
+  (get-user-channels user-id 1))
 
 (defn join-channel!
   "Add the user to the participants of the channel"
@@ -35,13 +49,20 @@
     (db/join-channel! {:channel-id channel-id :user-id user-id})
     (get-user-channels user-id)))
 
+(defn make-channel!
+  "Makes a new channel, returns the id. Use type: 0 for a regular
+  channel, type: 1 for an unnamed chat between users."
+  [name type]
+    ((keyword "scope_identity()")
+      (db/save-channel!
+        {:name name
+         :type type})))
+
 (defn post-channel!
   "Add a new channel, join it and return all user's channels and
   the id of the new channel."
   [name user-id]  
-  (let [new-channel-id ((keyword "scope_identity()")
-                          (db/save-channel!
-                          {:name name}))]
+  (let [new-channel-id (make-channel! name 0)]
     (let [user-channels (join-channel! new-channel-id user-id)]
       {:userChannels user-channels
        :createdChannel new-channel-id})))
@@ -60,3 +81,13 @@
 (defn get-users
   []
   (db/get-users))
+
+(defn start-user-chat!
+  [another-user-id user-id]  
+  (let [new-channel-id (make-channel! nil 1)]
+    (do
+      (join-channel! new-channel-id user-id)
+      (join-channel! new-channel-id another-user-id))
+      (db/get-user-channels-with-participants
+        {:user-id user-id
+         :type 1})))

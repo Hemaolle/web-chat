@@ -15,23 +15,45 @@ WHERE channel_id = :channel-id
 
 -- :name save-channel! :insert
 /* :doc
-Creates a new channel using the channel name key, returns
+Creates a new channel using the channel name and type, returns
 the id of the new channel (with H2 db engine the result
-is of from {:scope_identity() id}).
+is of from {:scope_identity() id}). Type is an int: 0 is a
+regular channel, 1 a user chat (unnamed).
 */ 
 INSERT INTO channels
-(name)
-VALUES (:name)
+(name, type)
+VALUES (:name, :type)
 
 -- :name get-channels :? :*
--- :doc selects all available channels
+-- :doc selects all available channels of given type.
 SELECT * from channels
+WHERE type=:type
 
 -- :name get-user-channels :? :*
--- :doc selectes channels where the user has joined.
+/* :doc
+Selectes channels that user has joined of given type.
+Type is an int: 0 is a regular channel, 1 a user chat (unnamed).
+*/
 SELECT channels.id, channels.name from channels
 INNER JOIN channelsUsers ON channels.id=channelsUsers.channel_id
-WHERE channelsUsers.user_id=:user-id
+WHERE channelsUsers.user_id=:user-id AND channels.type=:type
+
+-- :name get-user-channels-with-participants :? :*
+/* :doc
+Selects a list of other users that the user with user-id is chatting
+with on channels of type channel-type. Also the corresponding chat id
+for each user is provided.
+*/
+SELECT
+  channelsUsers.channel_id as channelId,
+  users.name as userName,
+  users.id as userId
+  FROM channelsUsers
+  INNER JOIN users ON channelsUsers.user_id=users.id
+  INNER JOIN channels on channelsUsers.channel_id=channels.id
+  WHERE channelsUsers.user_id=:channel-id
+    AND NOT channelsUsers.user_id!=:user-id
+    AND channels.type=:channel-type
 
 -- :name join-channel! :! :n
 -- :doc adds the user-id - channel-id relationship.

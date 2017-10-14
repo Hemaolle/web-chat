@@ -16,13 +16,14 @@ class UserChats extends Component {
       (userId) => this.props.onUserChatStart(userId));
   }
 
-  render() {    
+  render() {
+    var userChats = this.props.chats.map((chat) =>
+      <li><button>{chat.userName}</button></li>);
     return (
       <div className="UserChats">
         <h3>People</h3>
         <ul>
-          {//userChats
-          }
+          {userChats}
         </ul>
         <button onClick={this.promptUsersToChatWith}>Find people</button>
       </div>

@@ -19,7 +19,8 @@ class App extends Component {
       myChannels: [],
       allChannels: [],
       currentChannel: null,
-      users: []
+      users: [],
+      myChats: []
     };
     this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);    
     this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
@@ -126,6 +127,12 @@ class App extends Component {
       this.setState({users: resp.body}));
   }
 
+  handleUserChatStart(userId) {
+    this.api.post(`user/${userId}/start_chat`,
+      {userId: this.state.user.id},
+      (resp) => this.setState({myChats: resp.body}));
+  }
+
   render() {
     return (
       <div className="App wrapper">
@@ -145,6 +152,7 @@ class App extends Component {
               onChannelJoin={this.handleChannelJoin}/>
             <UserChats
               users={this.state.users}
+              chats={this.state.myChats}
               onUserChatStart={(userId) => console.log(userId)}/>
           </div>
           <div className="box messaging">
