@@ -33,7 +33,7 @@ WHERE channelsUsers.user_id=:user-id
 -- :doc adds the user-id - channel-id relationship.
 INSERT INTO channelsUsers
 (user_id, channel_id)
-VALUES (:user-id, channel-id)
+VALUES (:user-id, :channel-id)
 
 -- :name save-user! :! :n
 -- :doc saves a new user using the name key

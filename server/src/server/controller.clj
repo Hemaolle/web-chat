@@ -61,4 +61,4 @@
   [channel-id user-id]
   (do
     (db/join-channel! {:channel-id channel-id :user-id user-id})
-    (db/get-user-channels user-id)))
+    (get-user-channels user-id)))

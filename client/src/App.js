@@ -26,6 +26,7 @@ class App extends Component {
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handleChannelAdd = this.handleChannelAdd.bind(this);
     this.handleChannelChange = this.handleChannelChange.bind(this);
+    this.handleChannelJoin = this.handleChannelJoin.bind(this);
   }
 
   componentDidMount() {
@@ -169,7 +170,8 @@ class App extends Component {
             allChannels={this.state.allChannels}
             currentChannel={this.state.currentChannel}
             onChannelAdd={this.handleChannelAdd}
-            onChannelSelect={(channel) => this.handleChannelChange(channel)}/>            
+            onChannelSelect={(channel) => this.handleChannelChange(channel)}
+            onChannelJoin={this.handleChannelJoin}/>            
           <div className="box messaging">
             <MessageTable messages={this.state.messages}/>
             <MessageInput onMessageSubmit={this.handleMessageSubmit}/>
