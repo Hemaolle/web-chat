@@ -48,6 +48,9 @@ class App extends Component {
     setInterval(
       () => this.loadMessagesFromServer(this.state.currentChannel),
       this.props.pollInterval);
+    setInterval(
+      () => this.loadChannelsFromServer(),
+      this.props.pollInterval);
   }
 
   loadMessagesFromServer(channel) {
