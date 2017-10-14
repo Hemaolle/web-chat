@@ -8,6 +8,7 @@ class Channels extends Component {
     this.promptChannelName = this.promptChannelName.bind(this);
     this.selectChannel = this.selectChannel.bind(this);
     this.promptChannelToJoin = this.promptChannelToJoin.bind(this);
+    this.memberIn = this.memberIn.bind(this);
   }
 
   promptChannelName() {
@@ -21,10 +22,16 @@ class Channels extends Component {
   }
 
   promptChannelToJoin() {
-    var options = this.props.allChannels.map((channel) =>
+    var availableChannels = this.props.allChannels.filter(
+      (channel) => !this.memberIn(channel));
+    var options = availableChannels.map((channel) =>
       ({ value: channel.id, label: channel.name }));
     Popup.plugins().select('Select a channel to join', options,
       (channelId) => this.props.onChannelJoin(channelId));
+  }
+
+  memberIn(channel) {
+    return this.props.myChannels.some(myChannel => myChannel.id === channel.id);
   }
 
   render() {
