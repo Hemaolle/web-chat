@@ -14,7 +14,7 @@ class App extends Component {
     super(props);
     this.state = {
       messages: [],
-      user: localStorage.getItem('user'),
+      user: this.getUserFromLocalStorage(),
       myChannels: [],
       allChannels: [],
       currentChannel: {id: 1}
@@ -27,6 +27,13 @@ class App extends Component {
     this.handleChannelAdd = this.handleChannelAdd.bind(this);
     this.handleChannelChange = this.handleChannelChange.bind(this);
     this.handleChannelJoin = this.handleChannelJoin.bind(this);
+  }
+
+  getUserFromLocalStorage() {
+    var user = localStorage.getItem('user');
+
+    // Short circuit to return false if the user was not stored.
+    return user && JSON.parse(user);
   }
 
   componentDidMount() {
@@ -113,7 +120,7 @@ class App extends Component {
       else {
         var user = {name: username, id:resp.body.id};
         this.setState({user: user});
-        localStorage.setItem('user', user);
+        localStorage.setItem('user', JSON.stringify(user));
         console.log("username change id " + user.id)
         this.loadUserChannelsFromServer(user.id);
       } 
