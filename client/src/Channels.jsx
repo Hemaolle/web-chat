@@ -38,7 +38,7 @@ class Channels extends Component {
     var channels = this.props.myChannels;
     var channelItems = channels.map((channel) =>
         <li key={channel.id}>
-          {channel === this.props.currentChannel ?
+          {channel.id === this.props.currentChannel.id ?
           (channel.name)
           : (<button onClick={() => this.selectChannel(channel)}>{channel.name}</button>)}
         </li>);

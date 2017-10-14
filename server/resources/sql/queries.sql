@@ -13,8 +13,13 @@ FROM messages
 INNER JOIN users ON messages.author_id=users.id
 WHERE channel_id = :channel-id
 
--- :name save-channel! :! :n
--- :doc creates a new channel using the channel name key
+-- 
+-- :name save-channel! :insert
+/* :doc
+Creates a new channel using the channel name key, returns
+the id of the new channel (with H2 db engine the result
+is of from {:scope_identity() id}).
+*/ 
 INSERT INTO channels
 (name)
 VALUES (:name)

@@ -134,16 +134,18 @@ class App extends Component {
   }
 
   handleChannelAdd(channel) {
+    var body = channel;
+    body.userId = this.state.user.id;
     xhr.post('http://localhost:3001/api/channel', {
       json: true,
-      body: channel
+      body: body
     }, function(err, resp) {
       if (err) {
         console.error(err);
       }
       else {
-        var channels = resp.body;
-        this.setState({channels: channels})
+        this.setState({myChannels: resp.body.userChannels,
+                       currentChannel: {id: resp.body.createdChannel}});
       } 
     }.bind(this));
   }

@@ -13,8 +13,8 @@
   (wrap-routes (POST "/api/message" [author, content, channelId]
     (response/ok (post-message! author content channelId))) wrap-json-params)
   (GET "/api/channels" [] (response/ok (get-channels)))
-  (wrap-routes (POST "/api/channel" [name]
-    (response/ok (post-channel! name))) wrap-json-params)
+  (wrap-routes (POST "/api/channel" [name userId]
+    (response/ok (post-channel! name userId))) wrap-json-params)
   (wrap-routes (POST "/api/user" [name]
     (response/ok (post-user! name))) wrap-json-params)
   (GET "/api/user/:user-id/channels" [user-id]
