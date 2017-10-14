@@ -2,7 +2,7 @@ import React from 'react';
 import Popup from 'react-popup';
 
 Popup.registerPlugin('select', function (title, options, callback) {
-    let selectValue = null;
+    let selectValue = options[0].value;
     let selectChange = function (event) {
       selectValue = event.target.value;
     };
