@@ -20,7 +20,8 @@
   (GET "/api/user/:user-id/channels" [user-id]
     (response/ok (get-user-channels user-id)))
   (wrap-routes (POST "/api/channel/:channelId/join" [channelId userId]
-    (response/ok (join-channel! channelId userId))) wrap-json-params))
+    (response/ok (join-channel! channelId userId))) wrap-json-params)
+  (GET "/api/users" [] response/ok (get-users)))
 
 (defroutes frontend-routes
   (GET "/" [] (resource-response "index.html" {:root "public"}))

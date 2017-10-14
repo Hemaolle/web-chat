@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import classNames from 'classnames';
 import Popup from 'react-popup';
 
 class Channels extends Component {
@@ -42,13 +41,9 @@ class Channels extends Component {
           (channel.name)
           : (<button onClick={() => this.selectChannel(channel)}>{channel.name}</button>)}
         </li>);
-    var classes = classNames({
-      "box": true,
-      "Channels": true
-    })
 
     return (
-      <div className={classes}>
+      <div className="Channels">
         <h3>Channels</h3>
         <ul>
           {channelItems}

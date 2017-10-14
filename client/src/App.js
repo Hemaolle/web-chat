@@ -7,7 +7,8 @@ import Username from './Username.jsx';
 import MessageTable from './MessageTable.jsx';
 import MessageInput from './MessageInput.jsx';
 import Channels from './Channels.jsx';
-import Api from './Api.js'
+import UserChats from './UserChats.jsx';
+import Api from './Api.js';
 
 class App extends Component {
   constructor(props) {
@@ -17,9 +18,10 @@ class App extends Component {
       user: this.getUserFromLocalStorage(),
       myChannels: [],
       allChannels: [],
-      currentChannel: null
+      currentChannel: null,
+      users: []
     };
-    this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);
+    this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);    
     this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
     this.loadChannelsFromServer = this.loadChannelsFromServer.bind(this);
     this.loadUserChannelsFromServer = this.loadUserChannelsFromServer.bind(this);
@@ -27,6 +29,8 @@ class App extends Component {
     this.handleChannelAdd = this.handleChannelAdd.bind(this);
     this.handleChannelChange = this.handleChannelChange.bind(this);
     this.handleChannelJoin = this.handleChannelJoin.bind(this);
+    this.loadUsers = this.loadUsers.bind(this);
+
     this.api = new Api('http://localhost:3001/api/', this);
   }
 
@@ -46,12 +50,13 @@ class App extends Component {
       this.loadUserChannelsFromServer(this.state.user.id);
     }
 
-    setInterval(
-      () => this.loadMessagesFromServer(this.state.currentChannel),
-      this.props.pollInterval);
-    setInterval(
-      () => this.loadChannelsFromServer(),
-      this.props.pollInterval);
+    this.startPolling(() => this.loadMessagesFromServer(this.state.currentChannel));
+    this.startPolling(() => this.loadChannelsFromServer());
+    this.startPolling(() => this.loadUsers());
+  }
+
+  startPolling(pollFn) {
+    setInterval(pollFn, this.props.pollInterval);
   }
 
   loadMessagesFromServer(channel) {
@@ -116,20 +121,32 @@ class App extends Component {
     this.loadMessagesFromServer(channel);
   }
 
+  loadUsers() {
+    this.api.get('users', (resp) =>
+      this.setState({users: resp.body}));
+  }
+
   render() {
     return (
       <div className="App wrapper">
         <div className="header">
-          <Username user={this.state.user}
+          <Username
+            user={this.state.user}
             onUsernameChange={this.handleUsernameChange}/>
         </div>
         <div className="mainContent">
-          <Channels myChannels={this.state.myChannels}
-            allChannels={this.state.allChannels}
-            currentChannel={this.state.currentChannel}
-            onChannelAdd={this.handleChannelAdd}
-            onChannelSelect={(channel) => this.handleChannelChange(channel)}
-            onChannelJoin={this.handleChannelJoin}/>            
+          <div className="sidebar">
+            <Channels
+              myChannels={this.state.myChannels}
+              allChannels={this.state.allChannels}
+              currentChannel={this.state.currentChannel}
+              onChannelAdd={this.handleChannelAdd}
+              onChannelSelect={(channel) => this.handleChannelChange(channel)}
+              onChannelJoin={this.handleChannelJoin}/>
+            <UserChats
+              users={this.state.users}
+              onUserChatStart={(userId) => console.log(userId)}/>
+          </div>
           <div className="box messaging">
             <MessageTable messages={this.state.messages}/>
             <MessageInput onMessageSubmit={this.handleMessageSubmit}/>

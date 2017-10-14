@@ -13,7 +13,6 @@ FROM messages
 INNER JOIN users ON messages.author_id=users.id
 WHERE channel_id = :channel-id
 
--- 
 -- :name save-channel! :insert
 /* :doc
 Creates a new channel using the channel name key, returns
@@ -49,3 +48,6 @@ VALUES (:name)
 -- :name get-user-id :? :1
 SELECT id from users
 WHERE name = :name
+
+-- :name get-users :? :*
+SELECT * from users

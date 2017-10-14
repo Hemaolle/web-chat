@@ -56,3 +56,7 @@
     (do
       (db/save-user! {:name name})
       ((db/get-user-id {:name name})))))
+
+(defn get-users
+  []
+  (db/get-users))

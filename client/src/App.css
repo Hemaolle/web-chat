@@ -27,7 +27,8 @@
   display: table-cell;
 }
 
-.Channels {
+.sidebar {
+  display: table-cell;
   width: 150px;
   background-color: pink;
   padding: 1em;
