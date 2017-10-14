@@ -32,6 +32,10 @@
   []
   (json/write-str (db/get-channels)))
 
+(defn get-user-channels
+  [user-id]
+  (json/write-str (db/get-user-channels {:user-id user-id})))
+
 (defn post-channel!
   "Add a new channel"
   [name]
@@ -45,12 +49,16 @@
   In any case return the id for the username."
   [name]
   (json/write-str
-    {:userId 
-      (if-let [userId 
-        (db/get-user-id {:name name})]
-        userId
-        (do
-          (db/save-user! {:name name})
-          ((db/get-user-id {:name name}))))
-    }))
+    (if-let [userId 
+      (db/get-user-id {:name name})]
+      userId
+      (do
+        (db/save-user! {:name name})
+        ((db/get-user-id {:name name}))))))
 
+(defn join-channel!
+  "Add the user to the participants of the channel"
+  [channel-id user-id]
+  (do
+    (db/join-channel! {:channel-id channel-id :user-id user-id})
+    (db/get-user-channels user-id)))

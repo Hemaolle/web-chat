@@ -21,14 +21,14 @@ class Channels extends Component {
   }
 
   promptChannelToJoin() {
-    var options = this.props.channels.map((channel) =>
+    var options = this.props.allChannels.map((channel) =>
       ({ value: channel.id, label: channel.name }));
     Popup.plugins().select('Select a channel to join', options,
-      (channelId) => console.log(channelId))
+      (channelId) => this.props.onChannelJoin)
   }
 
   render() {
-    var channels = this.props.channels;
+    var channels = this.props.myChannels;
     var channelItems = channels.map((channel) =>
         <li key={channel.id}>
           {channel === this.props.currentChannel ?

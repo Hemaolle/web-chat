@@ -8,7 +8,7 @@ class Username extends Component {
   }
 
   componentDidMount() {
-    if (!this.props.username)
+    if (!this.props.user)
       {
         this.promptUsername();
       }
@@ -21,9 +21,9 @@ class Username extends Component {
   }
 
   render() {
-    return this.props.username ?
+    return this.props.user ?
       (<div className="Username">
-        Logged in as <b>{this.props.username}</b> <button onClick={this.promptUsername}>Change</button>
+        Logged in as <b>{this.props.user.name}</b> <button onClick={this.promptUsername}>Change</button>
       </div>)
       : null;
   }

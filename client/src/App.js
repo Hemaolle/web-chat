@@ -14,13 +14,15 @@ class App extends Component {
     super(props);
     this.state = {
       messages: [],
-      username: localStorage.getItem('username'),
-      channels: [],
+      user: localStorage.getItem('user'),
+      myChannels: [],
+      allChannels: [],
       currentChannel: {id: 1}
     };
     this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);
     this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
     this.loadChannelsFromServer = this.loadChannelsFromServer.bind(this);
+    this.loadUserChannelsFromServer = this.loadUserChannelsFromServer.bind(this);
     this.handleUsernameChange = this.handleUsernameChange.bind(this);
     this.handleChannelAdd = this.handleChannelAdd.bind(this);
     this.handleChannelChange = this.handleChannelChange.bind(this);
@@ -28,28 +30,30 @@ class App extends Component {
 
   componentDidMount() {
     this.loadMessagesFromServer(this.state.currentChannel);
-    this.loadChannelsFromServer();
+    this.loadChannelsFromServer();    
     setInterval(
       () => this.loadMessagesFromServer(this.state.currentChannel),
       this.props.pollInterval);
   }
 
   loadMessagesFromServer(channel) {
-    xhr.get(`http://localhost:3001/api/messages?channelId=${channel.id}`,
-      {json: true},
-      function(err, resp) {
-      if (err) {
-        console.error(err);
-      }
-      else {
-        var messages = resp.body;
-        this.setState({messages: messages})
-      }      
-    }.bind(this));
+    if (channel) {
+      xhr.get(`http://localhost:3001/api/messages?channelId=${channel.id}`,
+        {json: true},
+        function(err, resp) {
+        if (err) {
+          console.error(err);
+        }
+        else {
+          var messages = resp.body;
+          this.setState({messages: messages})
+        }      
+      }.bind(this));
+    }
   }
 
   handleMessageSubmit(message) {
-    message.author = this.state.username;
+    message.author = this.state.user.username;
     message.channelId = this.state.currentChannel.id;
     xhr.post('http://localhost:3001/api/message', {
       json: true,
@@ -75,15 +79,29 @@ class App extends Component {
       else {
         var channels = resp.body;
         this.setState(
-          {channels: channels,
+          {allChannels: channels});
+      }      
+    }.bind(this));
+  }
+
+  loadUserChannelsFromServer(userId) {
+    console.log(userId);
+    xhr.get(`http://localhost:3001/api/user/${userId}/channels`,
+      {json: true},
+      function(err, resp) {
+      if (err) {
+        console.error(err);
+      }
+      else {
+        var channels = resp.body;
+        this.setState(
+          {myChannels: channels,
            currentChannel: channels[0]});
       }      
     }.bind(this));
   }
 
   handleUsernameChange(username) {
-    localStorage.setItem('username', username);
-    this.setState({username: username});
     xhr.post('http://localhost:3001/api/user', {
       json: true,
       body: {name: username}
@@ -92,7 +110,11 @@ class App extends Component {
         console.error(err);
       }
       else {
-        console.log("User id: " + resp.body.userId);
+        var user = {name: username, id:resp.body.id};
+        this.setState({user: user});
+        localStorage.setItem('user', user);
+        console.log("username change id " + user.id)
+        this.loadUserChannelsFromServer(user.id);
       } 
     }.bind(this));
   }
@@ -112,6 +134,21 @@ class App extends Component {
     }.bind(this));
   }
 
+  handleChannelJoin(channelId) {
+    xhr.post(`http://localhost:3001/api/channel/${channelId}/join`, {
+      json: true,
+      body: {userId: this.state.user.id}
+    }, function(err, resp) {
+      if (err) {
+        console.error(err);
+      }
+      else {
+        var channels = resp.body;
+        this.setState({myChannels: channels})
+      } 
+    }.bind(this));
+  }
+
   handleChannelChange(channel) {
     this.setState({currentChannel: channel});
 
@@ -124,11 +161,12 @@ class App extends Component {
     return (
       <div className="App wrapper">
         <div className="header">
-          <Username username={this.state.username}
+          <Username user={this.state.user}
             onUsernameChange={this.handleUsernameChange}/>
         </div>
         <div className="mainContent">
-          <Channels channels={this.state.channels}
+          <Channels myChannels={this.state.myChannels}
+            allChannels={this.state.allChannels}
             currentChannel={this.state.currentChannel}
             onChannelAdd={this.handleChannelAdd}
             onChannelSelect={(channel) => this.handleChannelChange(channel)}/>            

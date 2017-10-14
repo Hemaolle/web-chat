@@ -23,6 +23,18 @@ VALUES (:name)
 -- :doc selects all available channels
 SELECT * from channels
 
+-- :name get-user-channels :? :*
+-- :doc selectes channels where the user has joined.
+SELECT channels.id, channels.name from channels
+INNER JOIN channelsUsers ON channels.id=channelsUsers.channel_id
+WHERE channelsUsers.user_id=:user-id
+
+-- :name join-channel! :! :n
+-- :doc adds the user-id - channel-id relationship.
+INSERT INTO channelsUsers
+(user_id, channel_id)
+VALUES (:user-id, channel-id)
+
 -- :name save-user! :! :n
 -- :doc saves a new user using the name key
 INSERT INTO users

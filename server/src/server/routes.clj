@@ -16,7 +16,11 @@
   (wrap-routes (POST "/api/channel" [name]
     (response/ok (post-channel! name))) wrap-json-params)
   (wrap-routes (POST "/api/user" [name]
-    (response/ok (post-user! name))) wrap-json-params))
+    (response/ok (post-user! name))) wrap-json-params)
+  (GET "/api/user/:user-id/channels" [user-id]
+    (response/ok (get-user-channels user-id)))
+  (wrap-routes (POST "/api/channel/:channelId/join" [channelId userId]
+    (response/ok (join-channel! channelId userId))) wrap-json-params))
 
 (defroutes frontend-routes
   (GET "/" [] (resource-response "index.html" {:root "public"}))
