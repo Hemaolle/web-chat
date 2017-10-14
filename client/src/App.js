@@ -17,7 +17,7 @@ class App extends Component {
       user: this.getUserFromLocalStorage(),
       myChannels: [],
       allChannels: [],
-      currentChannel: {id: 1}
+      currentChannel: null
     };
     this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);
     this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
@@ -38,7 +38,13 @@ class App extends Component {
 
   componentDidMount() {
     this.loadMessagesFromServer(this.state.currentChannel);
-    this.loadChannelsFromServer();    
+    this.loadChannelsFromServer();
+
+    if (this.state.user)
+    {      
+      this.loadUserChannelsFromServer(this.state.user.id);
+    }
+
     setInterval(
       () => this.loadMessagesFromServer(this.state.currentChannel),
       this.props.pollInterval);
