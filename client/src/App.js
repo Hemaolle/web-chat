@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import 'react-select/dist/react-select.css';
 import './App.css';
-import xhr from 'xhr';
 import './Prompt.jsx';
 import './SelectPopup.jsx'
 import Username from './Username.jsx';
 import MessageTable from './MessageTable.jsx';
 import MessageInput from './MessageInput.jsx';
 import Channels from './Channels.jsx';
+import Api from './Api.js'
 
 class App extends Component {
   constructor(props) {
@@ -27,6 +27,7 @@ class App extends Component {
     this.handleChannelAdd = this.handleChannelAdd.bind(this);
     this.handleChannelChange = this.handleChannelChange.bind(this);
     this.handleChannelJoin = this.handleChannelJoin.bind(this);
+    this.api = new Api('http://localhost:3001/api/', this);
   }
 
   getUserFromLocalStorage() {
@@ -55,117 +56,56 @@ class App extends Component {
 
   loadMessagesFromServer(channel) {
     if (channel) {
-      xhr.get(`http://localhost:3001/api/messages?channelId=${channel.id}`,
-        {json: true},
-        function(err, resp) {
-        if (err) {
-          console.error(err);
-        }
-        else {
-          var messages = resp.body;
-          this.setState({messages: messages})
-        }      
-      }.bind(this));
+      this.api.get(`messages?channelId=${channel.id}`,
+        (resp) => {
+            var messages = resp.body;
+            this.setState({messages: messages})
+        });
     }
   }
 
   handleMessageSubmit(message) {
     message.author = this.state.user.name;
     message.channelId = this.state.currentChannel.id;
-    xhr.post('http://localhost:3001/api/message', {
-      json: true,
-      body: message
-    }, function(err, resp) {
-      if (err) {
-        console.error(err);
-      }
-      else {
+    this.api.post('message', message, (resp) => {
         var messages = resp.body;
         this.setState({messages: messages})
-      } 
-    }.bind(this));
+      });
   }
 
   loadChannelsFromServer() {
-    xhr.get('http://localhost:3001/api/channels',
-      {json: true},
-      function(err, resp) {
-      if (err) {
-        console.error(err);
-      }
-      else {
-        var channels = resp.body;
-        this.setState(
-          {allChannels: channels});
-      }      
-    }.bind(this));
+    this.api.get('channels', (resp) => 
+      this.setState({allChannels: resp.body.channels})
+    );
   }
 
   loadUserChannelsFromServer(userId) {
-    console.log(userId);
-    xhr.get(`http://localhost:3001/api/user/${userId}/channels`,
-      {json: true},
-      function(err, resp) {
-      if (err) {
-        console.error(err);
-      }
-      else {
-        var channels = resp.body;
-        this.setState(
-          {myChannels: channels,
-           currentChannel: channels[0]});
-      }      
-    }.bind(this));
+    this.api.get(`user/${userId}/channels`, (resp) => 
+      this.setState(
+          {myChannels: resp.body,
+           currentChannel: resp.body[0]}));
   }
 
   handleUsernameChange(username) {
-    xhr.post('http://localhost:3001/api/user', {
-      json: true,
-      body: {name: username}
-    }, function(err, resp) {
-      if (err) {
-        console.error(err);
-      }
-      else {
-        var user = {name: username, id:resp.body.id};
-        this.setState({user: user});
-        localStorage.setItem('user', JSON.stringify(user));
-        console.log("username change id " + user.id)
-        this.loadUserChannelsFromServer(user.id);
-      } 
-    }.bind(this));
+    this.api.post('user', {name: username}, (resp) => {
+      var user = {name: username, id:resp.body.id};
+      this.setState({user: user});
+      localStorage.setItem('user', JSON.stringify(user));
+      this.loadUserChannelsFromServer(user.id);
+    });
   }
 
   handleChannelAdd(channel) {
-    var body = channel;
-    body.userId = this.state.user.id;
-    xhr.post('http://localhost:3001/api/channel', {
-      json: true,
-      body: body
-    }, function(err, resp) {
-      if (err) {
-        console.error(err);
-      }
-      else {
-        this.setState({myChannels: resp.body.userChannels,
-                       currentChannel: {id: resp.body.createdChannel}});
-      } 
-    }.bind(this));
+    channel.userId = this.state.user.id;
+    this.api.post('channel', channel, (resp) => 
+      this.setState({myChannels: resp.body.userChannels,
+                     currentChannel: {id: resp.body.createdChannel}}));    
   }
 
   handleChannelJoin(channelId) {
-    xhr.post(`http://localhost:3001/api/channel/${channelId}/join`, {
-      json: true,
-      body: {userId: this.state.user.id}
-    }, function(err, resp) {
-      if (err) {
-        console.error(err);
-      }
-      else {
-        var channels = resp.body;
-        this.setState({myChannels: channels})
-      } 
-    }.bind(this));
+    this.api.post(`channel/${channelId}/join`,
+      {userId: this.state.user.id},
+      (resp) => this.setState({myChannels: resp.body.channels}));
   }
 
   handleChannelChange(channel) {
