@@ -67,7 +67,7 @@ class App extends Component {
   }
 
   handleMessageSubmit(message) {
-    message.author = this.state.user.username;
+    message.author = this.state.user.name;
     message.channelId = this.state.currentChannel.id;
     xhr.post('http://localhost:3001/api/message', {
       json: true,
