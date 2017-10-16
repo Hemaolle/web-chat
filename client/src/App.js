@@ -156,7 +156,7 @@ class App extends Component {
               allChannels={this.state.allChannels}
               currentChannel={this.state.currentChannel}
               onChannelAdd={this.handleChannelAdd}
-              onChannelSelect={(channel) => this.handleChannelChange(channel)}
+              onChannelSelect={this.handleChannelChange}
               onChannelJoin={this.handleChannelJoin}/>
             <Chats
               users={this.state.users}
