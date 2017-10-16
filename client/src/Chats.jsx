@@ -18,7 +18,13 @@ class Chats extends Component {
 
   render() {
     var chats = this.props.chats.map((chat) =>
-      <li key={chat.chatId}><button>{chat.username}</button></li>);
+      <li key={chat.channelId}>
+        {chat.channelId === this.props.currentChannel.id ?
+          chat.username
+          : (<button onClick={() => this.props.onChatSelect({id: chat.channelId})}>
+             {chat.username}
+           </button>)}
+      </li>);
     return (
       <div className="Chats">
         <h3>People</h3>

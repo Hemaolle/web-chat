@@ -161,7 +161,9 @@ class App extends Component {
             <Chats
               users={this.state.users}
               chats={this.state.chats}
-              onChatStart={this.handleChatStart}/>
+              onChatStart={this.handleChatStart}
+              onChatSelect={this.handleChannelChange}
+              currentChannel={this.state.currentChannel}/>
           </div>
           <div className="box messaging">
             <MessageTable messages={this.state.messages}/>
