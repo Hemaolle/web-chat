@@ -16,11 +16,13 @@
                  [mount "0.1.11"]
                  [cprop "0.1.8"]
                  [org.clojure/tools.logging "0.4.0"]
-                 [luminus-log4j "0.1.3"]]
+                 [luminus-log4j "0.1.3"]
+                 [environ "1.1.0"]]
   :main server.core
   :plugins [[lein-cprop "1.0.1"]
             [lein-ring "0.9.7"]
-            [migratus-lein "0.5.2"]]
+            [migratus-lein "0.5.2"]
+            [lein-environ "1.1.0"]]
   :ring {:handler server.core/app
          :init server.core/init}
   :migratus {:store :database

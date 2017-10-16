@@ -5,7 +5,8 @@
             [compojure.core :refer [routes wrap-routes]]
             [server.routes :refer [api-routes frontend-routes]]
             [ring.middleware.json :refer [wrap-json-response]]
-            [server.serialization]))
+            [server.serialization]
+            [environ.core :refer [env]]))
 
 (def app
   (routes
@@ -24,5 +25,5 @@
     (init)
     (jetty/run-jetty
         (-> #'app)
-        {:port 3001
+        {:port (env :port)
          :join? false})))
