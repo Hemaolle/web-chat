@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import 'react-select/dist/react-select.css';
 import './App.css';
 import './Prompt.jsx';
 import './SelectPopup.jsx'
