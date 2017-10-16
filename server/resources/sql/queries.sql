@@ -45,15 +45,18 @@ with on channels of type channel-type. Also the corresponding chat id
 for each user is provided.
 */
 SELECT
-  channelsUsers.channel_id as channelId,
-  users.name as userName,
-  users.id as userId
+  channelsUsers.channel_id as channelid,
+  users.name as username,
+  users.id as userid
   FROM channelsUsers
   INNER JOIN users ON channelsUsers.user_id=users.id
   INNER JOIN channels on channelsUsers.channel_id=channels.id
-  WHERE channelsUsers.user_id=:channel-id
-    AND NOT channelsUsers.user_id!=:user-id
-    AND channels.type=:channel-type
+  WHERE channelsUsers.channel_id in
+    (SELECT channel_id
+      FROM channelsUsers
+      WHERE user_id=:user-id)
+    AND NOT channelsUsers.user_id=:user-id
+    AND channels.type=:type
 
 -- :name join-channel! :! :n
 -- :doc adds the user-id - channel-id relationship.

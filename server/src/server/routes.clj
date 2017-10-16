@@ -23,8 +23,11 @@
     (response/ok (join-channel! channelId userId))) wrap-json-params)
   (GET "/api/users" [] response/ok (get-users))
   (wrap-routes (POST "/api/user/:another-user-id/start_chat"
-    [another-user-id user-id]
-    (response/ok (start-user-chat! another-user-id user-id))) wrap-json-params))
+    [another-user-id userId]      
+    (response/ok (start-user-chat! another-user-id userId)))
+    wrap-json-params)
+  (wrap-routes (GET "/api/user/:user-id/chats" [user-id]
+    response/ok (get-user-chats user-id)) wrap-params))
 
 (defroutes frontend-routes
   (GET "/" [] (resource-response "index.html" {:root "public"}))

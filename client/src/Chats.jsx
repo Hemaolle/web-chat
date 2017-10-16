@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import Popup from 'react-popup';
 
-class UserChats extends Component {
+class Chats extends Component {
 
   constructor(props) {
     super(props);
@@ -13,17 +13,17 @@ class UserChats extends Component {
     var options = this.props.users.map((user) =>
       ({ value: user.id, label: user.name }));
     Popup.plugins().select('Start a chat with', options,
-      (userId) => this.props.onUserChatStart(userId));
+      (userId) => this.props.onChatStart(userId));
   }
 
   render() {
-    var userChats = this.props.chats.map((chat) =>
-      <li><button>{chat.userName}</button></li>);
+    var chats = this.props.chats.map((chat) =>
+      <li key={chat.chatId}><button>{chat.username}</button></li>);
     return (
-      <div className="UserChats">
+      <div className="Chats">
         <h3>People</h3>
         <ul>
-          {userChats}
+          {chats}
         </ul>
         <button onClick={this.promptUsersToChatWith}>Find people</button>
       </div>
@@ -31,4 +31,4 @@ class UserChats extends Component {
   }
 }
 
-export default UserChats;
+export default Chats;

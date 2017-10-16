@@ -47,7 +47,7 @@
   [channel-id user-id]
   (do
     (db/join-channel! {:channel-id channel-id :user-id user-id})
-    (get-user-channels user-id)))
+      (get-user-channels user-id 0)))
 
 (defn make-channel!
   "Makes a new channel, returns the id. Use type: 0 for a regular
@@ -76,11 +76,23 @@
     userId
     (do
       (db/save-user! {:name name})
-      ((db/get-user-id {:name name})))))
+      (db/get-user-id {:name name}))))
 
 (defn get-users
   []
   (db/get-users))
+
+(defn get-user-chats
+  "Get user chats. We change the result map names to camelCase here.
+  Couldn't figure out how to get case sensitive column aliases in the
+  SQL query."
+  [user-id]
+  (let [chats (db/get-user-channels-with-participants
+    {:user-id user-id :type 1})]
+    (map #(clojure.set/rename-keys % 
+      {:userid :userId
+       :channelid :channelId})
+       chats)))
 
 (defn start-user-chat!
   [another-user-id user-id]  
@@ -88,11 +100,4 @@
     (do
       (join-channel! new-channel-id user-id)
       (join-channel! new-channel-id another-user-id))
-      (db/get-user-channels-with-participants
-        {:user-id user-id
-         :type 1})))
-
-(defn get-user-chats
-  [user-id]
-  (db/get-user-channels-with-participants
-    {:user-id user-id :type 1}))
+      (get-user-chats user-id)))

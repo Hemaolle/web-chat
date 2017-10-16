@@ -7,7 +7,7 @@ import Username from './Username.jsx';
 import MessageTable from './MessageTable.jsx';
 import MessageInput from './MessageInput.jsx';
 import Channels from './Channels.jsx';
-import UserChats from './UserChats.jsx';
+import Chats from './Chats.jsx';
 import Api from './Api.js';
 
 class App extends Component {
@@ -20,7 +20,7 @@ class App extends Component {
       allChannels: [],
       currentChannel: null,
       users: [],
-      myChats: []
+      chats: []
     };
     this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);    
     this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
@@ -31,6 +31,7 @@ class App extends Component {
     this.handleChannelChange = this.handleChannelChange.bind(this);
     this.handleChannelJoin = this.handleChannelJoin.bind(this);
     this.loadUsers = this.loadUsers.bind(this);
+    this.handleChatStart = this.handleChatStart.bind(this);
 
     this.api = new Api('http://localhost:3001/api/', this);
   }
@@ -54,6 +55,7 @@ class App extends Component {
     this.startPolling(() => this.loadMessagesFromServer(this.state.currentChannel));
     this.startPolling(() => this.loadChannelsFromServer());
     this.startPolling(() => this.loadUsers());
+    this.startPolling(() => this.loadChats());
   }
 
   startPolling(pollFn) {
@@ -80,8 +82,10 @@ class App extends Component {
   }
 
   loadChannelsFromServer() {
-    this.api.get('channels', (resp) => 
-      this.setState({allChannels: resp.body.channels})
+    this.api.get('channels', (resp) => {
+      console.log(resp);
+      this.setState({allChannels: resp.body});
+    }
     );
   }
 
@@ -127,10 +131,15 @@ class App extends Component {
       this.setState({users: resp.body}));
   }
 
-  handleUserChatStart(userId) {
+  loadChats() {
+    this.api.get(`user/${this.state.user.id}/chats`, (resp) =>
+      this.setState({chats: resp.body}));
+  }
+
+  handleChatStart(userId) {
     this.api.post(`user/${userId}/start_chat`,
       {userId: this.state.user.id},
-      (resp) => this.setState({myChats: resp.body}));
+      (resp) => this.setState({chats: resp.body}));
   }
 
   render() {
@@ -150,10 +159,10 @@ class App extends Component {
               onChannelAdd={this.handleChannelAdd}
               onChannelSelect={(channel) => this.handleChannelChange(channel)}
               onChannelJoin={this.handleChannelJoin}/>
-            <UserChats
+            <Chats
               users={this.state.users}
-              chats={this.state.myChats}
-              onUserChatStart={(userId) => console.log(userId)}/>
+              chats={this.state.chats}
+              onChatStart={this.handleChatStart}/>
           </div>
           <div className="box messaging">
             <MessageTable messages={this.state.messages}/>
