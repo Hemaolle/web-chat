@@ -114,7 +114,7 @@ class App extends Component {
   handleChannelJoin(channelId) {
     this.api.post(`channel/${channelId}/join`,
       {userId: this.state.user.id},
-      (resp) => this.setState({myChannels: resp.body.channels}));
+      (resp) => this.setState({myChannels: resp.body}));
   }
 
   handleChannelChange(channel) {
