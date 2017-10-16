@@ -31,5 +31,7 @@
   {:dev           [:project/dev :profiles/dev]
    :project/dev  {:resource-paths ["env/dev/resources"]}
    :profiles/dev {}
-   :profiles/test {}})
+   :profiles/test {}
+   ; Heroku recommends AOT compilation (https://devcenter.heroku.com/articles/deploying-clojure)
+   :uberjar {:aot :all}})
 
