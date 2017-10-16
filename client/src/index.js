@@ -8,6 +8,6 @@ import './popup-styles.css'
 
 // We must render the popup first so that it's usable in componentDidMount function of the app.
 ReactDOM.render(<Popup />, document.getElementById('popupContainer'));
-ReactDOM.render(<App pollInterval={200000}/>, document.getElementById('root'));
+ReactDOM.render(<App pollInterval={2000}/>, document.getElementById('root'));
 
 registerServiceWorker();
