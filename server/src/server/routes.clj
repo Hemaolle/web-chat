@@ -31,5 +31,4 @@
 
 (defroutes frontend-routes
   (GET "/" [] (resource-response "index.html" {:root "public"}))
-  (route/resources "/")
-  (route/not-found "Page not found"))
+  (route/resources "/"))
