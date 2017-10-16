@@ -91,3 +91,8 @@
       (db/get-user-channels-with-participants
         {:user-id user-id
          :type 1})))
+
+(defn get-user-chats
+  [user-id]
+  (db/get-user-channels-with-participants
+    {:user-id user-id :type 1}))
