@@ -21,15 +21,15 @@ lein ring server 3001
 
 Client:
 ```
-# Install npm packages
+# Install npm packages.
 # (Note for Windows users: You might run into this issue with npm install:
 # https://github.com/npm/npm/issues/17671. Retrying worked for me.)
 cd client
 npm install
 
-# Run the client on dev server. It also reloads immediately on changes.
+# Run the client on dev server. It's also reloaded immediately on file changes.
 # The browser window should open automatically and the client address
-# should be output to terminal also.
+# should be also output to the terminal.
 npm run start
 
 ```
@@ -39,20 +39,20 @@ npm run start
 You should have the Heroku CLI installed for this. 
  
 ```
-# Build the client:
+# Build the client.
 # (Note for Windows users: You might run into this issue with npm install:
 # https://github.com/npm/npm/issues/17671. Retrying worked for me.)
 cd client
 npm install
 npm run build
 
-# Copy the client build to public server resources
+# Copy the client build to the public server resources directory.
 cp -a build/. ../server/resources/public/
 
 cd ../server/
 
 # Deploy the server to Heroku using git. I'm creating a git repository
-# inside the repository here to avoid committing the client build to the
+# inside the main repository here to avoid committing the client build to the
 # main repository. Also, a Heroku app has to be in root of the repository,
 # although that you could work around like this:
 # https://coderwall.com/p/ssxp5q/heroku-deployment-without-the-app-being-at-the-repo-root-in-a-subfolder
@@ -67,6 +67,6 @@ heroku create web-chat
 # Push the repository
 git push heroku master
 
-# The app should be up and running. Open in the browser:
+# The app should be up and running. Open it in the browser:
 heroku open
 ```
