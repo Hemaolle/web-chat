@@ -6,7 +6,8 @@
             [server.routes :refer [api-routes frontend-routes]]
             [ring.middleware.json :refer [wrap-json-response]]
             [server.serialization]
-            [server.config :refer [env]])
+            [server.config :refer [env]]
+            [migratus.core :as migratus])
   (:gen-class))
 
 (def app
@@ -17,9 +18,23 @@
       (wrap-json-response))
     ))
 
-(defn init
+(defn migratus-conf
   []
-  (mount.core/start))
+ {:store :database
+  :migration-dir "migrations"
+  :db (env :database-url)})
+
+(defn init
+  []  
+  (mount.core/start)
+
+  ; We run the migrations here to initialize the embedded H2 database
+  ; on Heroku as it's not possible to access the dyno running the app
+  ; there to migrate manually.
+  ;
+  ; Should change to PostgreSQL to be able to use a plugin on Heroku
+  ; because the embedded db will be wiped every time the dyno is cycled.
+  (migratus/migrate (migratus-conf)))
 
 (defn -main []
   (do
