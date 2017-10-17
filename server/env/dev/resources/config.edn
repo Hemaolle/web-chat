@@ -1,0 +1,2 @@
+{:port 3001
+ :database-url "jdbc:h2:./db/chat_dev.db"}
