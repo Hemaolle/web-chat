@@ -132,8 +132,10 @@ class App extends Component {
   }
 
   loadChats() {
-    this.api.get(`user/${this.state.user.id}/chats`, (resp) =>
-      this.setState({chats: resp.body}));
+    if (this.state.user) {
+      this.api.get(`user/${this.state.user.id}/chats`, (resp) =>
+        this.setState({chats: resp.body}));
+    }
   }
 
   handleChatStart(userId) {
