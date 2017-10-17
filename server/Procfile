@@ -1,1 +1,1 @@
-web: java $JVM_OPTS -cp target/server-standalone.jar clojure.main -m server.core
+web: java $JVM_OPTS -cp target/web-chat.jar clojure.main -m server.core

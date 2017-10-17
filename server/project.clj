@@ -35,5 +35,6 @@
    ; Heroku recommends AOT compilation (https://devcenter.heroku.com/articles/deploying-clojure)
    :uberjar
      {:aot :all
-      :resource-paths ["env/prod/resources"]}})
+      :resource-paths ["env/prod/resources"]
+      :uberjar-name "web-chat.jar"}})
 
