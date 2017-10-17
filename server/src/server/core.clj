@@ -6,7 +6,7 @@
             [server.routes :refer [api-routes frontend-routes]]
             [ring.middleware.json :refer [wrap-json-response]]
             [server.serialization]
-            [environ.core :refer [env]])
+            [server.config :refer [env]])
   (:gen-class))
 
 (def app
