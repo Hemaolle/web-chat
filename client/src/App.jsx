@@ -32,7 +32,6 @@ class App extends Component {
     this.loadUsers = this.loadUsers.bind(this);
     this.handleChatStart = this.handleChatStart.bind(this);
 
-    this.api = new Api('http://localhost:3001/api', this);
     this.api = new Api(process.env.REACT_APP_API_URL, this);
   }
 
