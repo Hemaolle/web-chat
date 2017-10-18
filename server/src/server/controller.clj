@@ -53,7 +53,7 @@
     ((keyword "scope_identity()")
       (db/save-channel!
         {:name name
-         :type type})))))
+         :type type}))))
 
 (defn make-chat!
   "Make a new chat channel."
