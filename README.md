@@ -14,7 +14,10 @@ API:
 ```
 # Run the API on port 3001 (The client assumes this port in development, you can
 # change that in client/.env.development). Using lein-ring applies code changes
-# immediately. 
+# immediately.
+#
+# This should also run all the database migrations. For fine grained control over
+# the migrations use the lein migratus command. 
 cd server
 lein ring server 3001
 ```
