@@ -39,8 +39,11 @@ class App extends Component {
   getUserFromLocalStorage() {
     var user = localStorage.getItem('user');
 
-    // Short circuit to return false if the user was not stored.
-    return user && JSON.parse(user);
+    if (!user) {
+      return null;
+    }
+
+    return JSON.parse(user);
   }
 
   componentDidMount() {
