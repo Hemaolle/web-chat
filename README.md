@@ -39,7 +39,12 @@ npm run start
 
 ## Deploying to Heroku
 
-You should have the Heroku CLI installed for this. 
+You should have the Heroku CLI installed.
+
+Note that as the server is using an embedded H2 database, the contents of
+the database will be wiped every time the Heroku dyno is reloaded.
+We should switch to a database with Heroku add-on support if we wanted
+the data to persist.
  
 ```
 # Build the client.
