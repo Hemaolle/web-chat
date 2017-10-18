@@ -2,9 +2,9 @@
     (:require [server.db.core :as db]
               [clojure.tools.logging :as log]))
 
-; Named channel has a name and anyone can join, a chat is between users
+; Standard channel has a name and anyone can join, a chat is between users
 ; and doesn't have a name.
-(def channel-types {:named 0 :chat 1})
+(def channel-types {:standard 0 :chat 1})
 
 (defn get-messages
   "Get messages for a channel."
@@ -24,25 +24,21 @@
     (get-messages channel-id)))
 
 (defn get-channels
-  "List all channels."
-  [type]
-  (db/get-channels {:type type}))
-
-(defn get-named-channels
-  []
-  (get-channels (:named channel-types)))
+  "List all channels of given type (default to :standard)."
+  ([]
+    (get-channels (:standard channel-types)))
+  ([type]
+    (db/get-channels {:type type})))
 
 (defn get-user-channels
-  [user-id type]
-  (db/get-user-channels
-    {:user-id user-id
-     :type type}))
+  ([user-id]
+    (get-user-channels user-id (:standard channel-types)))
+  ([user-id type]
+    (db/get-user-channels
+      {:user-id user-id
+       :type type})))
 
-(defn get-user-named-channels
-  [user-id]
-  (get-user-channels user-id (:named channel-types)))
-
-(defn get-user-chat-channels
+(defn get-user-chats
   [user-id]
   (get-user-channels user-id (:chat channel-types)))
 
@@ -51,11 +47,10 @@
   [channel-id user-id]
   (do
     (db/join-channel! {:channel-id channel-id :user-id user-id})
-      (get-user-channels user-id (:named channel-types))))
+      (get-user-channels user-id (:standard channel-types))))
 
 (defn make-channel!
-  "Makes a new channel, returns the id. Use type: 0 for a regular
-  channel, type: 1 for an unnamed chat between users."
+  "Makes a new channel of , returns the id."
   [name type]
     ((keyword "scope_identity()")
       (db/save-channel!
@@ -66,7 +61,7 @@
   "Add a new channel, join it and return all user's channels and
   the id of the new channel."
   [name user-id]  
-  (let [new-channel-id (make-channel! name (:named channel-types))]
+  (let [new-channel-id (make-channel! name (:standard channel-types))]
     (let [user-channels (join-channel! new-channel-id user-id)]
       {:userChannels user-channels
        :createdChannel new-channel-id})))
@@ -86,7 +81,7 @@
   []
   (db/get-users))
 
-(defn get-user-chats
+(defn get-user-chats-with-participants
   "Get user chats. We change the result map names to camelCase here.
   Couldn't figure out how to get case sensitive column aliases in the
   SQL query."
@@ -104,4 +99,4 @@
     (do
       (join-channel! new-channel-id user-id)
       (join-channel! new-channel-id another-user-id))
-      (get-user-chats user-id)))
+      (get-user-chats-with-participants user-id)))
