@@ -1,6 +1,8 @@
 # Web-chat
 
-A simple Slack clone with a Clojure backend and a React client. Demo: https://leppaaho-web-chat.herokuapp.com/.
+A simple Slack clone with a Clojure backend and a React client.
+
+Demo: https://leppaaho-web-chat.herokuapp.com/.
 
 ## Requirements
 
