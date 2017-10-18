@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Popup from 'react-popup';
 import './index.css';
-import App from './App';
+import App from './App.jsx';
 import registerServiceWorker from './registerServiceWorker';
 import './popup-styles.css'
 
