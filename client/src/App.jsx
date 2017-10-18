@@ -12,6 +12,8 @@ import Api from './Api.js';
 class App extends Component {
   constructor(props) {
     super(props);
+
+    this.api = new Api(process.env.REACT_APP_API_URL, this);
     this.state = {
       messages: null,
       user: this.getUserFromLocalStorage(),
@@ -30,19 +32,22 @@ class App extends Component {
     this.handleChannelChange = this.handleChannelChange.bind(this);
     this.handleChannelJoin = this.handleChannelJoin.bind(this);
     this.loadUsers = this.loadUsers.bind(this);
-    this.handleChatStart = this.handleChatStart.bind(this);
-
-    this.api = new Api(process.env.REACT_APP_API_URL, this);
+    this.handleChatStart = this.handleChatStart.bind(this);    
   }
 
   getUserFromLocalStorage() {
-    var user = localStorage.getItem('user');
+    var userString = localStorage.getItem('user');
 
-    if (!user) {
+    if (!userString) {
       return null;
     }
 
-    return JSON.parse(user);
+    var user = JSON.parse(userString);
+
+    // Post the stored username to the API just in case the
+    // database has been wiped in between.
+    this.handleUserChange(user.name);
+    return user;
   }
 
   componentDidMount() {
