@@ -14,8 +14,8 @@
 
 (def app
   (routes
-    frontend-routes    
-    (-> #'api-routes 
+    frontend-routes
+    (-> #'api-routes
       (wrap-cors)
       (wrap-params)
       (wrap-json-params)
@@ -29,7 +29,7 @@
   :db (env :database-url)})
 
 (defn init
-  []  
+  []
   (mount.core/start)
 
   ; We run the migrations here to initialize the embedded H2 database

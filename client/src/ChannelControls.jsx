@@ -6,7 +6,7 @@ class ChannelControls extends Component {
     super(props);
     this.promptChannelName = this.promptChannelName.bind(this);
     this.promptChannelToJoin = this.promptChannelToJoin.bind(this);
-  }  
+  }
 
   promptChannelName() {
     Popup.plugins().prompt('Name the new channel', '', 'Type the channel name', function (value) {
@@ -24,7 +24,7 @@ class ChannelControls extends Component {
       Popup.alert('You\'ve already joined all the channels.');
       return;
     }
-    
+
     Popup.plugins().select('Select a channel to join', options,
       (channelId) => this.props.onChannelJoin(channelId));
   }
@@ -37,8 +37,8 @@ class ChannelControls extends Component {
     // Don't show the button unless we have the required list of channels.
     var joinChannelButton = null;
     if (this.props.allChannels)
-    { 
-      joinChannelButton = 
+    {
+      joinChannelButton =
         (<button onClick={this.promptChannelToJoin}>Join channel</button>);
     }
 

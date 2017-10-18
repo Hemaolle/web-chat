@@ -30,14 +30,14 @@ class MessageInput extends Component {
     return (
       <form className="commentForm" onSubmit={this.handleSubmit}>
         <input type="submit" value="Post" className="submit"/>
-        <span className="inputContainer"> 
+        <span className="inputContainer">
           <input
             type="text"
             placeholder="Say something..."
             value={this.state.text}
             onChange={this.handleTextChange}
             className="input" />
-        </span>        
+        </span>
       </form>
     );
   }

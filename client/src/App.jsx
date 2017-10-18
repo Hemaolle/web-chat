@@ -21,7 +21,7 @@ class App extends Component {
       users: null,
       chats: null
     };
-    this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);    
+    this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);
     this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
     this.loadChannelsFromServer = this.loadChannelsFromServer.bind(this);
     this.loadUserChannelsFromServer = this.loadUserChannelsFromServer.bind(this);
@@ -48,7 +48,7 @@ class App extends Component {
 
   componentDidMount() {
     if (this.state.user)
-    {      
+    {
       this.loadUserChannelsFromServer(this.state.user.id);
     }
 
@@ -57,6 +57,7 @@ class App extends Component {
     this.startPolling(() => this.loadUsers());
     this.startPolling(() => this.loadChats());
   }
+
 
   startPolling(pollFn) {
     pollFn();
@@ -91,7 +92,7 @@ class App extends Component {
   }
 
   loadUserChannelsFromServer(userId) {
-    this.api.get(`user/${userId}/channels`, (resp) => 
+    this.api.get(`user/${userId}/channels`, (resp) =>
       this.setState(
           {myChannels: resp.body,
            currentChannel: resp.body[0]}));
@@ -117,9 +118,9 @@ class App extends Component {
 
   handleChannelAdd(channel) {
     channel.userId = this.state.user.id;
-    this.api.post('channel', channel, (resp) => 
+    this.api.post('channel', channel, (resp) =>
       this.setState({myChannels: resp.body.userChannels,
-                     currentChannel: {id: resp.body.createdChannel}}));    
+                     currentChannel: {id: resp.body.createdChannel}}));
   }
 
   handleChannelJoin(channelId) {

@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 
-class MessageTable extends Component {  
+class MessageTable extends Component {
   render() {
     var messages = this.props.messages;
-    var messageRows = null
+    var messageRows = null;
     if (messages) {
      messageRows = messages.map((message) =>
         <MessageRow message={message}
@@ -12,7 +12,7 @@ class MessageTable extends Component {
 
     return (
       <table className="MessageTable">
-          <tbody>          
+          <tbody>
               {messageRows}
           </tbody>
       </table>
@@ -27,10 +27,10 @@ class MessageRow extends Component {
     var timestamp = message.timestamp;
     var content = message.content;
 
-    return (      
+    return (
       <tr className="MessageRow">
         <td>{sender} ({timestamp}):</td>
-        <td>{content}</td>              
+        <td>{content}</td>
       </tr>
       );
   }

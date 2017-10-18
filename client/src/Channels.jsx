@@ -5,10 +5,10 @@ class Channels extends Component {
   constructor(props) {
     super(props);
     this.selectChannel = this.selectChannel.bind(this);
-  }  
+  }
 
   selectChannel(channel) {
-    this.props.onChannelSelect(channel)
+    this.props.onChannelSelect(channel);
   }
 
   render() {
