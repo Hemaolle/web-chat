@@ -23,16 +23,16 @@ class App extends Component {
       users: null,
       chats: null
     };
-    this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);
-    this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
-    this.loadChannelsFromServer = this.loadChannelsFromServer.bind(this);
-    this.loadUserChannelsFromServer = this.loadUserChannelsFromServer.bind(this);
-    this.handleUserChange = this.handleUserChange.bind(this);
-    this.handleChannelAdd = this.handleChannelAdd.bind(this);
-    this.handleChannelChange = this.handleChannelChange.bind(this);
-    this.handleChannelJoin = this.handleChannelJoin.bind(this);
+    this.loadMessages = this.loadMessages.bind(this);
+    this.sendMessage = this.sendMessage.bind(this);
+    this.loadChannels = this.loadChannels.bind(this);
+    this.loadUserChannels = this.loadUserChannels.bind(this);
+    this.changeUser = this.changeUser.bind(this);
+    this.addChannel = this.addChannel.bind(this);
+    this.changeChannel = this.changeChannel.bind(this);
+    this.joinChannel = this.joinChannel.bind(this);
     this.loadUsers = this.loadUsers.bind(this);
-    this.handleChatStart = this.handleChatStart.bind(this);    
+    this.startChat = this.startChat.bind(this);    
   }
 
   getUserFromLocalStorage() {
@@ -46,18 +46,18 @@ class App extends Component {
 
     // Post the stored username to the API just in case the
     // database has been wiped in between.
-    this.handleUserChange(user.name);
+    this.changeUser(user.name);
     return user;
   }
 
   componentDidMount() {
     if (this.state.user)
     {
-      this.loadUserChannelsFromServer(this.state.user.id);
+      this.loadUserChannels(this.state.user.id);
     }
 
-    this.startPolling(() => this.loadMessagesFromServer(this.state.currentChannel));
-    this.startPolling(() => this.loadChannelsFromServer());
+    this.startPolling(() => this.loadMessages(this.state.currentChannel));
+    this.startPolling(() => this.loadChannels());
     this.startPolling(() => this.loadUsers());
     this.startPolling(() => this.loadChats());
   }
@@ -68,7 +68,7 @@ class App extends Component {
     setInterval(pollFn, this.props.pollInterval);
   }
 
-  loadMessagesFromServer(channel) {
+  loadMessages(channel) {
     if (channel) {
       this.api.get(`channels/${channel.id}/messages`,
         (resp) => {
@@ -78,7 +78,7 @@ class App extends Component {
     }
   }
 
-  handleMessageSubmit(message) {
+  sendMessage(message) {
     message.author = this.state.user.name;
     var channelId = this.state.currentChannel.id;
     this.api.post(`channels/${channelId}/messages`,
@@ -88,7 +88,7 @@ class App extends Component {
       });
   }
 
-  loadChannelsFromServer() {
+  loadChannels() {
     this.api.get('channels', (resp) => {
       console.log(resp);
       this.setState({allChannels: resp.body});
@@ -96,14 +96,14 @@ class App extends Component {
     );
   }
 
-  loadUserChannelsFromServer(userId) {
+  loadUserChannels(userId) {
     this.api.get(`users/${userId}/channels`, (resp) =>
       this.setState(
           {myChannels: resp.body,
            currentChannel: resp.body[0]}));
   }
 
-  handleUserChange(username) {
+  changeUser(username) {
     this.setState({
       messages: null,
       myChannels: null,
@@ -117,29 +117,29 @@ class App extends Component {
       var user = {name: username, id:resp.body.id};
       this.setState({user: user});
       localStorage.setItem('user', JSON.stringify(user));
-      this.loadUserChannelsFromServer(user.id);
+      this.loadUserChannels(user.id);
     });
   }
 
-  handleChannelAdd(channel) {
+  addChannel(channel) {
     channel.userId = this.state.user.id;
     this.api.post('channels', channel, (resp) =>
       this.setState({myChannels: resp.body.userChannels,
                      currentChannel: {id: resp.body.createdChannel}}));
   }
 
-  handleChannelJoin(channelId) {
+  joinChannel(channelId) {
     this.api.post(`channels/${channelId}/join`,
       {userId: this.state.user.id},
       (resp) => this.setState({myChannels: resp.body}));
   }
 
-  handleChannelChange(channel) {
+  changeChannel(channel) {
     this.setState({currentChannel: channel});
 
     // Note that the state doesn't change immediately, so we can't take
     // the channel from the current state.
-    this.loadMessagesFromServer(channel);
+    this.loadMessages(channel);
   }
 
   loadUsers() {
@@ -154,7 +154,7 @@ class App extends Component {
     }
   }
 
-  handleChatStart(userId) {
+  startChat(userId) {
     this.api.post(`users/${userId}/start_chat`,
       {userId: this.state.user.id},
       (resp) => this.setState({chats: resp.body}));
@@ -166,7 +166,7 @@ class App extends Component {
         <div className="header">
           <Username
             user={this.state.user}
-            onUsernameChange={this.handleUserChange}/>
+            onUsernameChange={this.changeUser}/>
         </div>
         <div className="mainContent">
           <div className="sidebar">
@@ -174,22 +174,22 @@ class App extends Component {
               myChannels={this.state.myChannels}
               allChannels={this.state.allChannels}
               currentChannel={this.state.currentChannel}
-              onChannelAdd={this.handleChannelAdd}
-              onChannelSelect={this.handleChannelChange}
-              onChannelJoin={this.handleChannelJoin}/>
+              onChannelAdd={this.addChannel}
+              onChannelSelect={this.changeChannel}
+              onChannelJoin={this.joinChannel}/>
             <Chats
               users={this.state.users}
               chats={this.state.chats}
               user={this.state.user}
-              onChatStart={this.handleChatStart}
-              onChatSelect={this.handleChannelChange}
+              onChatStart={this.startChat}
+              onChatSelect={this.changeChannel}
               currentChannel={this.state.currentChannel}/>
           </div>
           <div className="box messaging">
             <MessageTable messages={this.state.messages}/>
             <MessageInput
               currentChannel={this.state.currentChannel}
-              onMessageSubmit={this.handleMessageSubmit}/>
+              onMessageSubmit={this.sendMessage}/>
           </div>
         </div>
         
