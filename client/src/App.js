@@ -162,6 +162,7 @@ class App extends Component {
             <Chats
               users={this.state.users}
               chats={this.state.chats}
+              user={this.state.user}
               onChatStart={this.handleChatStart}
               onChatSelect={this.handleChannelChange}
               currentChannel={this.state.currentChannel}/>
