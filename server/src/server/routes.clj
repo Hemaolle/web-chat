@@ -19,9 +19,9 @@
   (GET "/api/users" [] response/ok (get-users))
   (POST "/api/user/:another-user-id/start_chat"
     [another-user-id userId]
-    (response/ok (start-user-chat! another-user-id userId)))
+    (response/ok (start-chat! another-user-id userId)))
   (GET "/api/user/:user-id/chats" [user-id]
-    response/ok (get-user-chats-with-participants user-id)))
+    response/ok (get-user-chats user-id)))
 
 (defroutes frontend-routes
   (GET "/" [] (resource-response "index.html" {:root "public"}))

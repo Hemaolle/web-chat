@@ -24,44 +24,43 @@
     (get-messages channel-id)))
 
 (defn get-channels
-  "List all channels of given type (default to :standard)."
-  ([]
-    (get-channels (:standard channel-types)))
-  ([type]
-    (db/get-channels {:type type})))
+  "List all channels."
+  []
+  (db/get-channels {:type (:standard channel-types)}))
 
 (defn get-user-channels
-  ([user-id]
-    (get-user-channels user-id (:standard channel-types)))
-  ([user-id type]
+  [user-id]
     (db/get-user-channels
       {:user-id user-id
-       :type type})))
-
-(defn get-user-chats
-  [user-id]
-  (get-user-channels user-id (:chat channel-types)))
+       :type (:standard channel-types)}))
 
 (defn join-channel!
   "Add the user to the participants of the channel"
   [channel-id user-id]
   (do
     (db/join-channel! {:channel-id channel-id :user-id user-id})
-      (get-user-channels user-id (:standard channel-types))))
+      (get-user-channels user-id)))
 
 (defn make-channel!
-  "Makes a new channel of , returns the id."
-  [name type]
+  "Makes a new channel with given name an optionally a type (defaults
+  to a :standard channel, returns the id of the new channel."
+  ([name]
+    (make-channel! name (:standard channel-types)))
+  ([name type]
     ((keyword "scope_identity()")
       (db/save-channel!
         {:name name
-         :type type})))
+         :type type})))))
+
+(defn make-chat!
+  []
+    (make-channel! nil (:chat channel-types)))
 
 (defn post-channel!
   "Add a new channel, join it and return all user's channels and
   the id of the new channel."
   [name user-id]  
-  (let [new-channel-id (make-channel! name (:standard channel-types))]
+  (let [new-channel-id (make-channel! name)]
     (let [user-channels (join-channel! new-channel-id user-id)]
       {:userChannels user-channels
        :createdChannel new-channel-id})))
@@ -81,7 +80,7 @@
   []
   (db/get-users))
 
-(defn get-user-chats-with-participants
+(defn get-user-chats
   "Get user chats. We change the result map names to camelCase here.
   Couldn't figure out how to get case sensitive column aliases in the
   SQL query."
@@ -93,10 +92,10 @@
        :channelid :channelId})
        chats)))
 
-(defn start-user-chat!
+(defn start-chat!
   [another-user-id user-id]  
-  (let [new-channel-id (make-channel! nil (:chat channel-types))]
+  (let [new-channel-id (make-chat!)]
     (do
       (join-channel! new-channel-id user-id)
       (join-channel! new-channel-id another-user-id))
-      (get-user-chats-with-participants user-id)))
+      (get-user-chats user-id)))
