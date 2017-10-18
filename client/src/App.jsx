@@ -70,7 +70,7 @@ class App extends Component {
 
   loadMessagesFromServer(channel) {
     if (channel) {
-      this.api.get(`messages?channelId=${channel.id}`,
+      this.api.get(`channels/${channel.id}/messages`,
         (resp) => {
             var messages = resp.body;
             this.setState({messages: messages})
@@ -80,8 +80,9 @@ class App extends Component {
 
   handleMessageSubmit(message) {
     message.author = this.state.user.name;
-    message.channelId = this.state.currentChannel.id;
-    this.api.post('message', message, (resp) => {
+    var channelId = this.state.currentChannel.id;
+    this.api.post(`channels/${channelId}/messages`,
+      message, (resp) => {
         var messages = resp.body;
         this.setState({messages: messages})
       });
@@ -96,7 +97,7 @@ class App extends Component {
   }
 
   loadUserChannelsFromServer(userId) {
-    this.api.get(`user/${userId}/channels`, (resp) =>
+    this.api.get(`users/${userId}/channels`, (resp) =>
       this.setState(
           {myChannels: resp.body,
            currentChannel: resp.body[0]}));
@@ -112,7 +113,7 @@ class App extends Component {
       chats: null
     });
 
-    this.api.post('user', {name: username}, (resp) => {
+    this.api.post('users', {name: username}, (resp) => {
       var user = {name: username, id:resp.body.id};
       this.setState({user: user});
       localStorage.setItem('user', JSON.stringify(user));
@@ -122,13 +123,13 @@ class App extends Component {
 
   handleChannelAdd(channel) {
     channel.userId = this.state.user.id;
-    this.api.post('channel', channel, (resp) =>
+    this.api.post('channels', channel, (resp) =>
       this.setState({myChannels: resp.body.userChannels,
                      currentChannel: {id: resp.body.createdChannel}}));
   }
 
   handleChannelJoin(channelId) {
-    this.api.post(`channel/${channelId}/join`,
+    this.api.post(`channels/${channelId}/join`,
       {userId: this.state.user.id},
       (resp) => this.setState({myChannels: resp.body}));
   }
@@ -148,13 +149,13 @@ class App extends Component {
 
   loadChats() {
     if (this.state.user) {
-      this.api.get(`user/${this.state.user.id}/chats`, (resp) =>
+      this.api.get(`users/${this.state.user.id}/chats`, (resp) =>
         this.setState({chats: resp.body}));
     }
   }
 
   handleChatStart(userId) {
-    this.api.post(`user/${userId}/start_chat`,
+    this.api.post(`users/${userId}/start_chat`,
       {userId: this.state.user.id},
       (resp) => this.setState({chats: resp.body}));
   }
