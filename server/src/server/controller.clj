@@ -4,6 +4,8 @@
 
 ; Standard channel has a name and anyone can join, a chat is between users
 ; and doesn't have a name.
+;
+; For brevity we call a standard channel just a channel and a chat channel a chat.
 (def channel-types {:standard 0 :chat 1})
 
 (defn get-messages
@@ -29,20 +31,21 @@
   (db/get-channels {:type (:standard channel-types)}))
 
 (defn get-user-channels
+  "List all channels that the user has joined."
   [user-id]
     (db/get-user-channels
       {:user-id user-id
        :type (:standard channel-types)}))
 
 (defn join-channel!
-  "Add the user to the participants of the channel"
+  "Add the user to the participants of the channel."
   [channel-id user-id]
   (do
     (db/join-channel! {:channel-id channel-id :user-id user-id})
       (get-user-channels user-id)))
 
 (defn make-channel!
-  "Makes a new channel with given name an optionally a type (defaults
+  "Make a new channel with given name an optionally a type (defaults
   to a :standard channel, returns the id of the new channel."
   ([name]
     (make-channel! name (:standard channel-types)))
@@ -53,6 +56,7 @@
          :type type})))))
 
 (defn make-chat!
+  "Make a new chat channel."
   []
     (make-channel! nil (:chat channel-types)))
 
@@ -77,11 +81,16 @@
       (db/get-user-id {:name name}))))
 
 (defn get-users
+  "Get all the users."
   []
   (db/get-users))
 
 (defn get-user-chats
-  "Get user chats. We change the result map names to camelCase here.
+  "Get chats for given user returning a list where each item has the
+  channel id of the chat and the username and user id of the other user
+  in that chat.
+
+  We change the result map names to camelCase here.
   Couldn't figure out how to get case sensitive column aliases in the
   SQL query."
   [user-id]
@@ -93,6 +102,7 @@
        chats)))
 
 (defn start-chat!
+  "Start a chat with another user. Return all chats for the user."
   [another-user-id user-id]  
   (let [new-channel-id (make-chat!)]
     (do
