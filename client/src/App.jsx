@@ -25,7 +25,7 @@ class App extends Component {
     this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
     this.loadChannelsFromServer = this.loadChannelsFromServer.bind(this);
     this.loadUserChannelsFromServer = this.loadUserChannelsFromServer.bind(this);
-    this.handleUsernameChange = this.handleUsernameChange.bind(this);
+    this.handleUserChange = this.handleUserChange.bind(this);
     this.handleChannelAdd = this.handleChannelAdd.bind(this);
     this.handleChannelChange = this.handleChannelChange.bind(this);
     this.handleChannelJoin = this.handleChannelJoin.bind(this);
@@ -97,7 +97,16 @@ class App extends Component {
            currentChannel: resp.body[0]}));
   }
 
-  handleUsernameChange(username) {
+  handleUserChange(username) {
+    this.setState({
+      messages: null,
+      myChannels: null,
+      allChannels: null,
+      currentChannel: null,
+      users: null,
+      chats: null
+    });
+
     this.api.post('user', {name: username}, (resp) => {
       var user = {name: username, id:resp.body.id};
       this.setState({user: user});
@@ -151,7 +160,7 @@ class App extends Component {
         <div className="header">
           <Username
             user={this.state.user}
-            onUsernameChange={this.handleUsernameChange}/>
+            onUsernameChange={this.handleUserChange}/>
         </div>
         <div className="mainContent">
           <div className="sidebar">

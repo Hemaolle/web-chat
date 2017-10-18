@@ -23,7 +23,7 @@ class Username extends Component {
   render() {
     return this.props.user ?
       (<div className="Username">
-        Logged in as <b>{this.props.user.name}</b> <button onClick={this.promptUsername}>Change</button>
+        Logged in as <b>{this.props.user.name}</b> <button onClick={this.promptUsername}>Switch</button>
       </div>)
       : null;
   }
