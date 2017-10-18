@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Popup from 'react-popup';
 import ChatControls from './ChatControls.jsx'
 
 class Chats extends Component {
