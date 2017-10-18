@@ -2,6 +2,10 @@
     (:require [server.db.core :as db]
               [clojure.tools.logging :as log]))
 
+; Named channel has a name and anyone can join, a chat is between users
+; and doesn't have a name.
+(def channel-types {:named 0 :chat 1})
+
 (defn get-messages
   "Get messages for a channel."
   [channel-id]
@@ -26,7 +30,7 @@
 
 (defn get-named-channels
   []
-  (get-channels 0))
+  (get-channels (:named channel-types)))
 
 (defn get-user-channels
   [user-id type]
@@ -36,18 +40,18 @@
 
 (defn get-user-named-channels
   [user-id]
-  (get-user-channels user-id 0))
+  (get-user-channels user-id (:named channel-types)))
 
 (defn get-user-chat-channels
   [user-id]
-  (get-user-channels user-id 1))
+  (get-user-channels user-id (:chat channel-types)))
 
 (defn join-channel!
   "Add the user to the participants of the channel"
   [channel-id user-id]
   (do
     (db/join-channel! {:channel-id channel-id :user-id user-id})
-      (get-user-channels user-id 0)))
+      (get-user-channels user-id (:named channel-types))))
 
 (defn make-channel!
   "Makes a new channel, returns the id. Use type: 0 for a regular
@@ -62,7 +66,7 @@
   "Add a new channel, join it and return all user's channels and
   the id of the new channel."
   [name user-id]  
-  (let [new-channel-id (make-channel! name 0)]
+  (let [new-channel-id (make-channel! name (:named channel-types))]
     (let [user-channels (join-channel! new-channel-id user-id)]
       {:userChannels user-channels
        :createdChannel new-channel-id})))
@@ -88,7 +92,7 @@
   SQL query."
   [user-id]
   (let [chats (db/get-user-channels-with-participants
-    {:user-id user-id :type 1})]
+    {:user-id user-id :type (:chat channel-types)})]
     (map #(clojure.set/rename-keys % 
       {:userid :userId
        :channelid :channelId})
@@ -96,7 +100,7 @@
 
 (defn start-user-chat!
   [another-user-id user-id]  
-  (let [new-channel-id (make-channel! nil 1)]
+  (let [new-channel-id (make-channel! nil (:chat channel-types))]
     (do
       (join-channel! new-channel-id user-id)
       (join-channel! new-channel-id another-user-id))
