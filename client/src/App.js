@@ -44,9 +44,6 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.loadMessagesFromServer(this.state.currentChannel);
-    this.loadChannelsFromServer();
-
     if (this.state.user)
     {      
       this.loadUserChannelsFromServer(this.state.user.id);
@@ -59,6 +56,7 @@ class App extends Component {
   }
 
   startPolling(pollFn) {
+    pollFn();
     setInterval(pollFn, this.props.pollInterval);
   }
 
