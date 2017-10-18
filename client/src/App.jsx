@@ -169,7 +169,9 @@ class App extends Component {
           </div>
           <div className="box messaging">
             <MessageTable messages={this.state.messages}/>
-            <MessageInput onMessageSubmit={this.handleMessageSubmit}/>
+            <MessageInput
+              currentChannel={this.state.currentChannel}
+              onMessageSubmit={this.handleMessageSubmit}/>
           </div>
         </div>
         

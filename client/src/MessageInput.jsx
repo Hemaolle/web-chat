@@ -23,6 +23,10 @@ class MessageInput extends Component {
   }
 
   render() {
+    if (!this.props.currentChannel) {
+      return null;
+    }
+    
     return (
       <form className="commentForm" onSubmit={this.handleSubmit}>
         <input type="submit" value="Post" className="submit"/>
