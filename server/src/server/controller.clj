@@ -8,6 +8,9 @@
 ; For brevity we call a standard channel just a channel and a chat channel a chat.
 (def channel-types {:standard 0 :chat 1})
 
+; A "general" channel with this id is created in the database migrations.
+(def default-channel-id 1)
+
 (defn get-messages
   "Get messages for a channel."
   [channel-id]
@@ -71,14 +74,18 @@
 
 (defn post-user!
   "Add a new user if a user with the same username doesn't exist yet.
-  In any case return the id for the username."
+  In any case return the id for the username.
+
+  If a new user is created, join the default channel."
   [name]  
-  (if-let [userId 
+  (if-let [user-id 
     (db/get-user-id {:name name})]
-    userId
+    user-id
     (do
-      (db/save-user! {:name name})
-      (db/get-user-id {:name name}))))
+      (db/save-user! {:name name})      
+      (let [user-id (db/get-user-id {:name name})]
+        (join-channel! default-channel-id (:id user-id))
+        user-id))))
 
 (defn get-users
   "Get all the users."
