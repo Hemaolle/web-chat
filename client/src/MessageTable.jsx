@@ -3,9 +3,12 @@ import React, { Component } from 'react';
 class MessageTable extends Component {  
   render() {
     var messages = this.props.messages;
-    var messageRows = messages.map((message) =>
+    var messageRows = null
+    if (messages) {
+     messageRows = messages.map((message) =>
         <MessageRow message={message}
                     key={message.id} />);
+    }
 
     return (
       <table className="MessageTable">

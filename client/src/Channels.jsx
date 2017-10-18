@@ -35,18 +35,24 @@ class Channels extends Component {
 
   render() {
     var channels = this.props.myChannels;
-    var channelItems = channels.map((channel) =>
+    var channelItems = null;
+    if (channels)
+    {
+      channelItems = channels.map((channel) =>
         <li key={channel.id}>
-          {channel.id === this.props.currentChannel.id ?
+          {this.props.currentChannel && channel.id === this.props.currentChannel.id ?
           (channel.name)
           : (<button onClick={() => this.selectChannel(channel)}>{channel.name}</button>)}
         </li>);
+    }
 
-    // Don't show the button unless we have the required channel lists.
-    var joinChannelButton =
-      this.props.allChannels && this.props.myChannels?
-        (<button onClick={this.promptChannelToJoin}>Join channel</button>)
-        : null;
+    // Don't show the button unless we have the required list of channels.
+    var joinChannelButton = null;
+    if (this.props.allChannels)
+    { 
+      joinChannelButton = 
+        (<button onClick={this.promptChannelToJoin}>Join channel</button>);
+    }
 
     return (
       <div className="Channels">

@@ -13,13 +13,13 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      messages: [],
+      messages: null,
       user: this.getUserFromLocalStorage(),
-      myChannels: [],
+      myChannels: null,
       allChannels: null,
       currentChannel: null,
       users: null,
-      chats: []
+      chats: null
     };
     this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);    
     this.handleMessageSubmit = this.handleMessageSubmit.bind(this);
