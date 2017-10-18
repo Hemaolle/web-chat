@@ -7,7 +7,9 @@
             [ring.middleware.json :refer [wrap-json-response]]
             [server.serialization]
             [server.config :refer [env]]
-            [migratus.core :as migratus])
+            [migratus.core :as migratus]
+            [ring.middleware.params :refer [wrap-params]]
+            [ring.middleware.json :refer [wrap-json-params]])
   (:gen-class))
 
 (def app
@@ -15,6 +17,8 @@
     frontend-routes    
     (-> #'api-routes 
       (wrap-cors)
+      (wrap-params)
+      (wrap-json-params)
       (wrap-json-response))
     ))
 
