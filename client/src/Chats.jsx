@@ -19,7 +19,8 @@ class Chats extends Component {
   render() {
     var chats = this.props.chats.map((chat) =>
       <li key={chat.channelId}>
-        {chat.channelId === this.props.currentChannel.id ?
+        {this.props.currentChannel 
+          && chat.channelId === this.props.currentChannel.id ?
           chat.username
           : (<button onClick={() => this.props.onChatSelect({id: chat.channelId})}>
              {chat.username}
