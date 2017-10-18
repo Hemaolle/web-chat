@@ -14,6 +14,17 @@ class Chats extends Component {
       (user) => !(this.props.user.id === user.id));
     var availableUsers = otherUsers.filter(
       (user) => !this.chattingWith(user));
+
+    if (otherUsers.length === 0) {
+      Popup.alert('There is no one else on the server yet.');
+      return;
+    }
+
+    if (availableUsers.length === 0) {
+      Popup.alert('You are already chatting with everyone.')
+      return;
+    }
+
     var options = availableUsers.map((user) =>
       ({ value: user.id, label: user.name }));
     Popup.plugins().select('Start a chat with', options,

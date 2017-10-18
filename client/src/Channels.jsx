@@ -25,6 +25,12 @@ class Channels extends Component {
       (channel) => !this.memberIn(channel));
     var options = availableChannels.map((channel) =>
       ({ value: channel.id, label: channel.name }));
+
+    if (availableChannels.length === 0) {
+      Popup.alert('You\'ve already joined all the channels.');
+      return;
+    }
+    
     Popup.plugins().select('Select a channel to join', options,
       (channelId) => this.props.onChannelJoin(channelId));
   }
