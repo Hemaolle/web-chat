@@ -6,7 +6,6 @@ class ChannelControls extends Component {
     super(props);
     this.promptChannelName = this.promptChannelName.bind(this);
     this.promptChannelToJoin = this.promptChannelToJoin.bind(this);
-    this.memberIn = this.memberIn.bind(this);
   }  
 
   promptChannelName() {
