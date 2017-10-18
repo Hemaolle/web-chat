@@ -42,13 +42,19 @@ class Channels extends Component {
           : (<button onClick={() => this.selectChannel(channel)}>{channel.name}</button>)}
         </li>);
 
+    // Don't show the button unless we have the required channel lists.
+    var joinChannelButton =
+      this.props.allChannels && this.props.myChannels?
+        (<button onClick={this.promptChannelToJoin}>Join channel</button>)
+        : null;
+
     return (
       <div className="Channels">
         <h3>Channels</h3>
         <ul>
           {channelItems}
         </ul>
-        <button onClick={this.promptChannelToJoin}>Join channel</button>
+        {joinChannelButton}
         <button onClick={this.promptChannelName}>New channel</button>
       </div>
     );

@@ -26,13 +26,20 @@ class Chats extends Component {
              {chat.username}
            </button>)}
       </li>);
+
+    // Don't show the button unless we have the required list of other users.
+    var newChatButton = 
+      this.props.users ?
+        (<button onClick={this.promptUsersToChatWith}>Find people</button>)
+        : null;
+
     return (
       <div className="Chats">
         <h3>People</h3>
         <ul>
           {chats}
         </ul>
-        <button onClick={this.promptUsersToChatWith}>Find people</button>
+        {newChatButton}
       </div>
     );
   }

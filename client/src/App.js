@@ -16,9 +16,9 @@ class App extends Component {
       messages: [],
       user: this.getUserFromLocalStorage(),
       myChannels: [],
-      allChannels: [],
+      allChannels: null,
       currentChannel: null,
-      users: [],
+      users: null,
       chats: []
     };
     this.loadMessagesFromServer = this.loadMessagesFromServer.bind(this);    
