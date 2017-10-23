@@ -17,7 +17,8 @@
                  [mount "0.1.11"]
                  [cprop "0.1.8"]
                  [org.clojure/tools.logging "0.4.0"]
-                 [luminus-log4j "0.1.3"]]
+                 [luminus-log4j "0.1.3"]
+                 [ring/ring-mock "0.3.1"]]
   :main server.core
   :plugins [[lein-cprop "1.0.1"]
             [lein-ring "0.9.7"]
